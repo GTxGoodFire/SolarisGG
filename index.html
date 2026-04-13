@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tienda SolarisGG — Rangos</title>
+
+  <!-- Tipografías -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      background: #0a0a0a;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    header {
+      background: #ffcc00;
+      color: #000;
+      padding: 25px;
+      text-align: center;
+      font-size: 32px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px #ffcc00;
+    }
+
+    header img {
+      display: block;
+      margin: 0 auto 10px auto;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: auto;
+      padding: 30px 0;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 30px;
+      font-family: 'Orbitron', sans-serif;
+      color: #ffcc00;
+    }
+
+    .rango {
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      transition: 0.3s;
+    }
+
+    .rango:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px rgba(255,255,255,0.25);
+    }
+
+    .titulo-rango {
+      font-size: 26px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .precio {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    ul {
+      margin-left: 20px;
+      line-height: 1.6;
+    }
+
+    .btn-comprar {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 25px;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: 0.3s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .btn-comprar:hover {
+      background: #ddd;
+    }
+
+    /* Colores por rango */
+    .veterano { background: #0d1b2a; border-left: 6px solid #1b263b; }
+    .vip { background: #3d2f00; border-left: 6px solid #ffcc00; }
+    .vipplus { background: #4a3b00; border-left: 6px solid #ffd700; }
+    .premium { background: #2a003d; border-left: 6px solid #b300ff; }
+
+    .rango img {
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      color: #aaa;
+      font-size: 14px;
+      font-family: 'Montserrat', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="img/SolarisGG - LogoShop.png" width="160" alt="Logo Tienda SolarisGG">
+  SolarisGG — Tienda Oficial de Rangos
+</header>
+
+<div class="container">
+
+  <h2>Rangos Disponibles</h2>
+
+  <!-- VETERANO -->
+  <div class="rango veterano">
+    <img src="img/Veterano.png" width="90" alt="Rango Veterano">
+    <div class="titulo-rango">VETERANO</div>
+    <div class="precio">1.99 €</div>
+    <ul>
+      <li>Prefijo exclusivo: [Veterano]</li>
+      <li>Acceso a /hat</li>
+      <li>Acceso a /craft</li>
+      <li>Chat destacado</li>
+    </ul>
+    <a class="btn-comprar" href="mailto:solarisgg@ejemplo.com?subject=Compra%20Veterano">Comprar</a>
+  </div>
+
+  <!-- VIP -->
+  <div class="rango vip">
+    <img src="img/VIP.png" width="90" alt="Rango VIP">
+    <div class="titulo-rango">VIP</div>
+    <div class="precio">4.99 €</div>
+    <ul>
+      <li>Todo lo de Veterano</li>
+      <li>Acceso a /feed</li>
+      <li>Acceso a /back</li>
+      <li>Cola prioritaria</li>
+    </ul>
+    <a class="btn-comprar" href="mailto:solarisgg@ejemplo.com?subject=Compra%20VIP">Comprar</a>
+  </div>
+
+  <!-- VIP+ -->
+  <div class="rango vipplus">
+    <img src="img/VIP+.png" width="90" alt="Rango VIP+">
+    <div class="titulo-rango">VIP+</div>
+    <div class="precio">7.99 €</div>
+    <ul>
+      <li>Todo lo de VIP</li>
+      <li>Acceso a /fly</li>
+      <li>Acceso a /enderchest</li>
+      <li>Kit semanal especial</li>
+    </ul>
+    <a class="btn-comprar" href="mailto:solarisgg@ejemplo.com?subject=Compra%20VIP+">Comprar</a>
+  </div>
+
+  <!-- PREMIUM -->
+  <div class="rango premium">
+    <img src="img/Premium.png" width="90" alt="Rango Premium">
+    <div class="titulo-rango">PREMIUM</div>
+    <div class="precio">11.99 €</div>
+    <ul>
+      <li>Todo lo de VIP+</li>
+      <li>Acceso a /repair</li>
+      <li>Acceso a /nick</li>
+      <li>Kit legendario mensual</li>
+      <li>Soporte prioritario</li>
+    </ul>
+    <a class="btn-comprar" href="mailto:solarisgg@ejemplo.com?subject=Compra%20PREMIUM">Comprar</a>
+  </div>
+
+</div>
+
+<footer>
+  <img src="img/SolarisGG - Logo.png" width="120" alt="Logo SolarisGG">
+  <br><br>
+  SolarisGG © Todos los derechos reservados
+</footer>
+
+</body>
+</html>
