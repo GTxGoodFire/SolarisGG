@@ -90,6 +90,7 @@
       text-decoration: none;
       transition: 0.3s;
       font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
     }
 
     .btn-comprar:hover {
@@ -139,7 +140,7 @@
       <li>Acceso a /craft</li>
       <li>Chat destacado</li>
     </ul>
-    <a class="btn-comprar" href="mailto:solarisgg@ejemplo.com?subject=Compra%20Veterano">Comprar</a>
+    <a class="btn-comprar" onclick="abrirCompra('Veterano', '1.99', 'https://paypal.me/TUNOMBRE/1.99')">Comprar</a>
   </div>
 
   <!-- VIP -->
@@ -153,7 +154,7 @@
       <li>Acceso a /back</li>
       <li>Cola prioritaria</li>
     </ul>
-    <a class="btn-comprar" href="mailto:solarisgg@ejemplo.com?subject=Compra%20VIP">Comprar</a>
+    <a class="btn-comprar" onclick="abrirCompra('VIP', '4.99', 'https://paypal.me/TUNOMBRE/4.99')">Comprar</a>
   </div>
 
   <!-- VIP+ -->
@@ -167,7 +168,7 @@
       <li>Acceso a /enderchest</li>
       <li>Kit semanal especial</li>
     </ul>
-    <a class="btn-comprar" href="mailto:solarisgg@ejemplo.com?subject=Compra%20VIP+">Comprar</a>
+    <a class="btn-comprar" onclick="abrirCompra('VIP+', '7.99', 'https://paypal.me/TUNOMBRE/7.99')">Comprar</a>
   </div>
 
   <!-- PREMIUM -->
@@ -182,7 +183,7 @@
       <li>Kit legendario mensual</li>
       <li>Soporte prioritario</li>
     </ul>
-    <a class="btn-comprar" href="mailto:solarisgg@ejemplo.com?subject=Compra%20PREMIUM">Comprar</a>
+    <a class="btn-comprar" onclick="abrirCompra('Premium', '11.99', 'https://paypal.me/TUNOMBRE/11.99')">Comprar</a>
   </div>
 
 </div>
@@ -192,6 +193,66 @@
   <br><br>
   SolarisGG © Todos los derechos reservados
 </footer>
+
+
+<!-- MODAL DE COMPRA -->
+<div id="modal" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+">
+  <div style="
+    background:#111;
+    padding:25px;
+    border-radius:12px;
+    width:90%;
+    max-width:350px;
+    text-align:center;
+    box-shadow:0 0 20px #ffcc00;
+    font-family:'Montserrat', sans-serif;
+  ">
+    <h2 id="modal-titulo" style="color:#ffcc00; font-family:'Orbitron';"></h2>
+    <p id="modal-precio" style="font-size:20px; margin-bottom:20px;"></p>
+
+    <a id="modal-paypal" href="#" target="_blank" style="
+      display:block;
+      background:#ffcc00;
+      color:#000;
+      padding:12px;
+      border-radius:8px;
+      font-weight:bold;
+      margin-bottom:15px;
+      text-decoration:none;
+    ">Pagar con PayPal</a>
+
+    <button onclick="cerrarModal()" style="
+      background:#333;
+      color:#fff;
+      padding:10px 20px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    ">Cancelar</button>
+  </div>
+</div>
+
+<script>
+function abrirCompra(nombre, precio, paypal) {
+  document.getElementById("modal-titulo").innerText = "Comprar " + nombre;
+  document.getElementById("modal-precio").innerText = "Precio: " + precio + " €";
+  document.getElementById("modal-paypal").href = paypal;
+  document.getElementById("modal").style.display = "flex";
+}
+
+function cerrarModal() {
+  document.getElementById("modal").style.display = "none";
+}
+</script>
 
 </body>
 </html>
