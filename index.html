@@ -15,6 +15,34 @@
       font-family: 'Montserrat', sans-serif;
     }
 
+    /* NAVBAR */
+    nav {
+      width:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      background:rgba(0,0,0,0.55);
+      backdrop-filter:blur(8px);
+      padding:12px 25px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      z-index:9999;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+      font-family:'Montserrat', sans-serif;
+    }
+
+    nav a {
+      color:#fff;
+      text-decoration:none;
+      font-weight:500;
+      transition:0.2s;
+    }
+
+    nav a:hover {
+      color:#ffcc00;
+    }
+
     header {
       background: #ffcc00;
       color: #000;
@@ -26,6 +54,7 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       box-shadow: 0 0 20px #ffcc00;
+      margin-top:80px;
     }
 
     header img {
@@ -120,7 +149,23 @@
 </head>
 <body>
 
-<header>
+<!-- NAVBAR PROFESIONAL -->
+<nav>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="SolarisGG - Logo.png" width="45" style="border-radius:6px;">
+    <span style="font-size:20px; font-weight:700; color:#ffcc00; font-family:'Orbitron';">
+      SolarisGG
+    </span>
+  </div>
+
+  <div style="display:flex; gap:25px;">
+    <a href="#rangos">Rangos</a>
+    <a href="#soporte">Soporte</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+</nav>
+
+<header id="rangos">
   <img src="SolarisGG - LogoShop.png" width="160" alt="Logo Tienda SolarisGG">
   SolarisGG — Tienda Oficial de Rangos
 </header>
@@ -136,9 +181,9 @@
     <div class="precio">1.99 €</div>
     <ul>
       <li>Prefijo exclusivo: [Veterano]</li>
-      <li>Acceso a /hat</li>
-      <li>Acceso a /craft</li>
-      <li>Chat destacado</li>
+      <li>Backpack</li>
+      <li>5 Sethomes</li>
+      <li>Todo lo de Free</li>
     </ul>
     <a class="btn-comprar" onclick="abrirCompra('Veterano', '1.99', 'https://paypal.me/TUNOMBRE/1.99')">Comprar</a>
   </div>
@@ -149,10 +194,10 @@
     <div class="titulo-rango">VIP</div>
     <div class="precio">4.99 €</div>
     <ul>
+      <li>Prefijo exclusivo: [VIP]</li>
+      <li>Volar (/fly)</li>
+      <li>10 Sethomes</li>
       <li>Todo lo de Veterano</li>
-      <li>Acceso a /feed</li>
-      <li>Acceso a /back</li>
-      <li>Cola prioritaria</li>
     </ul>
     <a class="btn-comprar" onclick="abrirCompra('VIP', '4.99', 'https://paypal.me/TUNOMBRE/4.99')">Comprar</a>
   </div>
@@ -163,10 +208,7 @@
     <div class="titulo-rango">VIP+</div>
     <div class="precio">7.99 €</div>
     <ul>
-      <li>Todo lo de VIP</li>
-      <li>Acceso a /fly</li>
-      <li>Acceso a /enderchest</li>
-      <li>Kit semanal especial</li>
+      <li>Próximamente...</li>
     </ul>
     <a class="btn-comprar" onclick="abrirCompra('VIP+', '7.99', 'https://paypal.me/TUNOMBRE/7.99')">Comprar</a>
   </div>
@@ -177,18 +219,14 @@
     <div class="titulo-rango">PREMIUM</div>
     <div class="precio">11.99 €</div>
     <ul>
-      <li>Todo lo de VIP+</li>
-      <li>Acceso a /repair</li>
-      <li>Acceso a /nick</li>
-      <li>Kit legendario mensual</li>
-      <li>Soporte prioritario</li>
+      <li>Próximamente...</li>
     </ul>
     <a class="btn-comprar" onclick="abrirCompra('Premium', '11.99', 'https://paypal.me/TUNOMBRE/11.99')">Comprar</a>
   </div>
 
 </div>
 
-<footer>
+<footer id="contacto">
   <img src="SolarisGG - Logo.png" width="120" alt="Logo SolarisGG">
   <br><br>
   SolarisGG © Todos los derechos reservados
