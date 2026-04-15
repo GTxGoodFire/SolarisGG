@@ -64,7 +64,6 @@
       display:flex;
       justify-content:center;
       align-items:center;
-      animation: logoPulse 3s ease-in-out infinite;
       filter: drop-shadow(0 0 25px #ffcc00);
     }
 
@@ -72,12 +71,6 @@
       width:100%;
       height:100%;
       object-fit:contain;
-    }
-
-    @keyframes logoPulse {
-      0% { transform: scale(1); filter: drop-shadow(0 0 15px #ffcc00); }
-      50% { transform: scale(1.07); filter: drop-shadow(0 0 35px #ffe066); }
-      100% { transform: scale(1); filter: drop-shadow(0 0 15px #ffcc00); }
     }
 
     /* CONTENIDO */
@@ -122,6 +115,13 @@
       margin-bottom: 15px;
     }
 
+    .subtitulo-free {
+      font-size: 18px;
+      color: #ffcc00;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
     ul {
       margin-left: 20px;
       line-height: 1.6;
@@ -144,7 +144,33 @@
       background: #ddd;
     }
 
+    .input-usuario {
+      width: 90%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .btn-guardar {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background:#ffcc00;
+      color:#000;
+      border:none;
+      border-radius:6px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .btn-guardar:hover {
+      background:#e6b800;
+    }
+
     /* Colores por rango */
+    .free { background: #1a1a1a; border-left: 6px solid #555; }
     .veterano { background: #0d1b2a; border-left: 6px solid #1b263b; }
     .vip { background: #3d2f00; border-left: 6px solid #ffcc00; }
     .vipplus { background: #4a3b00; border-left: 6px solid #ffd700; }
@@ -178,7 +204,7 @@
 </nav>
 
 <header id="rangos">
-  <div class="logo">
+  <div class="logo-wrapper">
     <img src="SolarisGG - LogoShop.png" alt="Logo SolarisGG">
   </div>
 </header>
@@ -187,6 +213,18 @@
 
   <h2>Rangos Disponibles</h2>
 
+  <!-- FREE -->
+  <div class="rango free">
+    <div class="titulo-rango">FREE</div>
+    <div class="subtitulo-free">Reclama tu Recompensa Gratis</div>
+    <ul>
+      <li>+25000$</li>
+    </ul>
+
+    <input class="input-usuario" id="user_free" placeholder="Tu nombre de usuario">
+    <button class="btn-guardar" onclick="guardar('FREE', 'user_free')">Guardar Usuario</button>
+  </div>
+
   <!-- VETERANO -->
   <div class="rango veterano">
     <img src="Veterano.png" width="90" alt="Rango Veterano">
@@ -194,10 +232,14 @@
     <div class="precio">1.99 €</div>
     <ul>
       <li>Prefijo exclusivo: [Veterano]</li>
-      <li>Backpack</li>
+      <li>Backpack 27 Slots</li>
       <li>5 Sethomes</li>
       <li>Todo lo de Free</li>
     </ul>
+
+    <input class="input-usuario" id="user_veterano" placeholder="Tu nombre de usuario">
+    <button class="btn-guardar" onclick="guardar('VETERANO', 'user_veterano')">Guardar Usuario</button>
+
     <a class="btn-comprar" onclick="abrirCompra('Veterano', '1.99', 'https://paypal.me/TUNOMBRE/1.99')">Comprar</a>
   </div>
 
@@ -212,6 +254,10 @@
       <li>10 Sethomes</li>
       <li>Todo lo de Veterano</li>
     </ul>
+
+    <input class="input-usuario" id="user_vip" placeholder="Tu nombre de usuario">
+    <button class="btn-guardar" onclick="guardar('VIP', 'user_vip')">Guardar Usuario</button>
+
     <a class="btn-comprar" onclick="abrirCompra('VIP', '4.99', 'https://paypal.me/TUNOMBRE/4.99')">Comprar</a>
   </div>
 
@@ -221,8 +267,15 @@
     <div class="titulo-rango">VIP+</div>
     <div class="precio">7.99 €</div>
     <ul>
-      <li>Próximamente...</li>
+      <li>Prefijo exclusivo: [VIP+]</li>
+      <li>Backpack 54 Slots</li>
+      <li>15 Sethomes</li>
+      <li>Todo lo de VIP</li>
     </ul>
+
+    <input class="input-usuario" id="user_vipplus" placeholder="Tu nombre de usuario">
+    <button class="btn-guardar" onclick="guardar('VIP+', 'user_vipplus')">Guardar Usuario</button>
+
     <a class="btn-comprar" onclick="abrirCompra('VIP+', '7.99', 'https://paypal.me/TUNOMBRE/7.99')">Comprar</a>
   </div>
 
@@ -234,6 +287,10 @@
     <ul>
       <li>Próximamente...</li>
     </ul>
+
+    <input class="input-usuario" id="user_premium" placeholder="Tu nombre de usuario">
+    <button class="btn-guardar" onclick="guardar('PREMIUM', 'user_premium')">Guardar Usuario</button>
+
     <a class="btn-comprar" onclick="abrirCompra('Premium', '11.99', 'https://paypal.me/TUNOMBRE/11.99')">Comprar</a>
   </div>
 
@@ -291,6 +348,25 @@
 </div>
 
 <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbx9iDijRXEYCq5XvFVDaqOEi5vdvKz0pvzfLNFTWRjyYZChJO7_uNLWAd36pVG8fdGtKQ/exec";
+
+function guardar(rango, inputId) {
+  const usuario = document.getElementById(inputId).value;
+
+  if (!usuario) {
+    alert("Por favor escribe un nombre de usuario");
+    return;
+  }
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ rango, usuario })
+  })
+  .then(res => res.text())
+  .then(() => alert("Usuario guardado correctamente"))
+  .catch(() => alert("Error al guardar"));
+}
+
 function abrirCompra(nombre, precio, paypal) {
   document.getElementById("modal-titulo").innerText = "Comprar " + nombre;
   document.getElementById("modal-precio").innerText = "Precio: " + precio + " €";
@@ -299,7 +375,7 @@ function abrirCompra(nombre, precio, paypal) {
 }
 
 function cerrarModal() {
-  document.getElementById(modal").style.display = "none";
+  document.getElementById("modal").style.display = "none";
 }
 </script>
 
