@@ -7,6 +7,9 @@
   <!-- Tipografías -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
+  <!-- PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AaHN77ik0__hZVMbchV7-proKW3IKJmiFH6Q1ERVxLdqb4FSbmpuDa2BWYylA_DI3cxLtotG02cw8oRA&currency=EUR"></script>
+
   <style>
     body {
       margin: 0;
@@ -15,7 +18,6 @@
       font-family: 'Montserrat', sans-serif;
     }
 
-    /* NAVBAR */
     nav {
       width:100%;
       position:fixed;
@@ -50,7 +52,6 @@
       gap:30px;
     }
 
-    /* LOGO */
     header {
       padding: 40px 0 20px 0;
       text-align: center;
@@ -73,7 +74,6 @@
       object-fit:contain;
     }
 
-    /* CONTENIDO */
     .container {
       width: 90%;
       max-width: 1000px;
@@ -169,7 +169,6 @@
       background:#e6b800;
     }
 
-    /* Colores por rango */
     .free { background: #1a1a1a; border-left: 6px solid #555; }
     .veterano { background: #0d1b2a; border-left: 6px solid #1b263b; }
     .vip { background: #3d2f00; border-left: 6px solid #ffcc00; }
@@ -187,7 +186,6 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav>
   <div style="display:flex; align-items:center; gap:10px;">
     <img src="SolarisGG - Logo.png" width="44" style="border-radius:6px;">
@@ -223,7 +221,7 @@
     </ul>
 
     <input class="input-usuario" id="user_free" placeholder="Tu nombre de usuario">
-    <button class="btn-guardar" onclick="guardar('FREE', 'user_free')">Guardar Usuario</button>
+    <button class="btn-guardar" onclick="guardarUsuario('FREE', 'user_free')">Guardar Usuario</button>
   </div>
 
   <!-- VETERANO -->
@@ -239,9 +237,7 @@
     </ul>
 
     <input class="input-usuario" id="user_veterano" placeholder="Tu nombre de usuario">
-    <button class="btn-guardar" onclick="guardar('VETERANO', 'user_veterano')">Guardar Usuario</button>
-
-    <a class="btn-comprar" onclick="abrirCompra('Veterano', '1.99', 'https://paypal.me/TUNOMBRE/1.99')">Comprar</a>
+    <div id="paypal-veterano"></div>
   </div>
 
   <!-- VIP -->
@@ -257,9 +253,7 @@
     </ul>
 
     <input class="input-usuario" id="user_vip" placeholder="Tu nombre de usuario">
-    <button class="btn-guardar" onclick="guardar('VIP', 'user_vip')">Guardar Usuario</button>
-
-    <a class="btn-comprar" onclick="abrirCompra('VIP', '4.99', 'https://paypal.me/TUNOMBRE/4.99')">Comprar</a>
+    <div id="paypal-vip"></div>
   </div>
 
   <!-- VIP+ -->
@@ -275,9 +269,7 @@
     </ul>
 
     <input class="input-usuario" id="user_vipplus" placeholder="Tu nombre de usuario">
-    <button class="btn-guardar" onclick="guardar('VIP+', 'user_vipplus')">Guardar Usuario</button>
-
-    <a class="btn-comprar" onclick="abrirCompra('VIP+', '7.99', 'https://paypal.me/TUNOMBRE/7.99')">Comprar</a>
+    <div id="paypal-vipplus"></div>
   </div>
 
   <!-- PREMIUM -->
@@ -290,9 +282,7 @@
     </ul>
 
     <input class="input-usuario" id="user_premium" placeholder="Tu nombre de usuario">
-    <button class="btn-guardar" onclick="guardar('PREMIUM', 'user_premium')">Guardar Usuario</button>
-
-    <a class="btn-comprar" onclick="abrirCompra('Premium', '11.99', 'https://paypal.me/TUNOMBRE/11.99')">Comprar</a>
+    <div id="paypal-premium"></div>
   </div>
 
 </div>
@@ -303,57 +293,12 @@
   SolarisGG © Todos los derechos reservados
 </footer>
 
-<!-- MODAL -->
-<div id="modal" style="
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.7);
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-">
-  <div style="
-    background:#111;
-    padding:25px;
-    border-radius:12px;
-    width:90%;
-    max-width:350px;
-    text-align:center;
-    box-shadow:0 0 20px #ffcc00;
-  ">
-    <h2 id="modal-titulo" style="color:#ffcc00; font-family:'Orbitron';"></h2>
-    <p id="modal-precio" style="font-size:20px; margin-bottom:20px;"></p>
-
-    <a id="modal-paypal" href="#" target="_blank" style="
-      display:block;
-      background:#ffcc00;
-      color:#000;
-      padding:12px;
-      border-radius:8px;
-      font-weight:bold;
-      margin-bottom:15px;
-      text-decoration:none;
-    ">Pagar con PayPal</a>
-
-    <button onclick="cerrarModal()" style="
-      background:#333;
-      color:#fff;
-      padding:10px 20px;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-    ">Cancelar</button>
-  </div>
-</div>
-
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbx9iDijRXEYCq5XvFVDaqOEi5vdvKz0pvzfLNFTWRjyYZChJO7_uNLWAd36pVG8fdGtKQ/exec";
 
-function guardar(rango, inputId) {
+// Guardar solo usuario (FREE)
+function guardarUsuario(rango, inputId) {
   const usuario = document.getElementById(inputId).value;
-
   if (!usuario) {
     alert("Por favor escribe un nombre de usuario");
     return;
@@ -361,23 +306,136 @@ function guardar(rango, inputId) {
 
   fetch(API_URL, {
     method: "POST",
-    body: JSON.stringify({ rango, usuario })
+    body: JSON.stringify({
+      rango: rango,
+      usuario: usuario,
+      paypalOrderId: "",
+      amount: 0,
+      status: "FREE_CLAIM"
+    })
   })
   .then(res => res.text())
   .then(() => alert("Usuario guardado correctamente"))
   .catch(() => alert("Error al guardar"));
 }
 
-function abrirCompra(nombre, precio, paypal) {
-  document.getElementById("modal-titulo").innerText = "Comprar " + nombre;
-  document.getElementById("modal-precio").innerText = "Precio: " + precio + " €";
-  document.getElementById("modal-paypal").href = paypal;
-  document.getElementById("modal").style.display = "flex";
+// Enviar pedido pagado a Google Sheets
+function enviarPedido(rango, inputId, amount, orderId, status) {
+  const usuario = document.getElementById(inputId).value;
+  if (!usuario) {
+    alert("Por favor escribe tu nombre de usuario antes de pagar");
+    return false;
+  }
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      rango: rango,
+      usuario: usuario,
+      paypalOrderId: orderId,
+      amount: amount,
+      status: status
+    })
+  })
+  .then(res => res.text())
+  .then(() => alert("Pago registrado correctamente. ¡Gracias!"))
+  .catch(() => alert("El pago se realizó, pero hubo un error registrando el pedido. Contacta con el staff."));
+
+  return true;
 }
 
-function cerrarModal() {
-  document.getElementById("modal").style.display = "none";
-}
+// Configurar botones PayPal
+document.addEventListener("DOMContentLoaded", function() {
+
+  // VETERANO
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      const usuario = document.getElementById("user_veterano").value;
+      if (!usuario) {
+        alert("Escribe tu nombre de usuario antes de pagar.");
+        return;
+      }
+      return actions.order.create({
+        purchase_units: [{
+          amount: { value: "1.99" },
+          description: "Rango VETERANO - SolarisGG"
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        enviarPedido("VETERANO", "user_veterano", 1.99, details.id, details.status);
+      });
+    }
+  }).render("#paypal-veterano");
+
+  // VIP
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      const usuario = document.getElementById("user_vip").value;
+      if (!usuario) {
+        alert("Escribe tu nombre de usuario antes de pagar.");
+        return;
+      }
+      return actions.order.create({
+        purchase_units: [{
+          amount: { value: "4.99" },
+          description: "Rango VIP - SolarisGG"
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        enviarPedido("VIP", "user_vip", 4.99, details.id, details.status);
+      });
+    }
+  }).render("#paypal-vip");
+
+  // VIP+
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      const usuario = document.getElementById("user_vipplus").value;
+      if (!usuario) {
+        alert("Escribe tu nombre de usuario antes de pagar.");
+        return;
+      }
+      return actions.order.create({
+        purchase_units: [{
+          amount: { value: "7.99" },
+          description: "Rango VIP+ - SolarisGG"
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        enviarPedido("VIP+", "user_vipplus", 7.99, details.id, details.status);
+      });
+    }
+  }).render("#paypal-vipplus");
+
+  // PREMIUM
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      const usuario = document.getElementById("user_premium").value;
+      if (!usuario) {
+        alert("Escribe tu nombre de usuario antes de pagar.");
+        return;
+      }
+      return actions.order.create({
+        purchase_units: [{
+          amount: { value: "11.99" },
+          description: "Rango PREMIUM - SolarisGG"
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        enviarPedido("PREMIUM", "user_premium", 11.99, details.id, details.status);
+      });
+    }
+  }).render("#paypal-premium");
+
+});
 </script>
 
 </body>
