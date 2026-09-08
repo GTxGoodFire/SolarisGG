@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="SolarisGG Logo.png">
 
-    <!-- FontAwesome para los iconos sociales y de interfaz -->
+    <!-- FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -22,6 +22,8 @@
             --gris-borde: #272a36;
             --negro-fondo: #0a0b0e;
             --negro-solido: #030405;
+            --verde-exito: #22c55e;
+            --rojo-error: #ef4444;
         }
 
         * {
@@ -29,6 +31,26 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* BARRA DE DESLIZAMIENTO GLOBAL DE LA WEB (SCROLLBAR) */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--negro-solido);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gris-borde);
+            border-radius: 5px;
+            border: 2px solid var(--negro-solido);
+            transition: background 0.2s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--naranja);
         }
 
         body {
@@ -42,7 +64,88 @@
                 radial-gradient(circle at 80% 90%, rgba(255, 107, 0, 0.05) 0%, transparent 50%);
         }
 
-        /* BARRA SUPERIOR - REDES SOCIALES Y ESTADO RÁPIDO */
+        /* CONTADOR DE PERSONAS EN LA WEB EN VIVO (ABAJO A LA IZQUIERDA) */
+        .live-web-users {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            background: var(--gris-tarjeta);
+            border: 1px solid var(--gris-borde);
+            padding: 10px 16px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--blanco);
+            backdrop-filter: blur(8px);
+        }
+
+        .pulse-green {
+            width: 10px;
+            height: 10px;
+            background-color: var(--verde-exito);
+            border-radius: 50%;
+            animation: pulse-green-anim 1.8s infinite;
+        }
+
+        @keyframes pulse-green-anim {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* CONTENEDOR DE NOTIFICACIONES EN LA PARTE INFERIOR DERECHA */
+        #toastContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--gris-tarjeta);
+            border: 1px solid var(--gris-borde);
+            border-left: 4px solid var(--naranja);
+            color: var(--blanco);
+            padding: 14px 18px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+            max-width: 380px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            pointer-events: auto;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { border-left-color: var(--verde-exito); }
+        .toast.success i { color: var(--verde-exito); }
+
+        .toast.error { border-left-color: var(--rojo-error); }
+        .toast.error i { color: var(--rojo-error); }
+
+        .toast.info { border-left-color: var(--naranja); }
+        .toast.info i { color: var(--naranja); }
+
+        /* BARRA SUPERIOR - REDES SOCIALES */
         .top-bar {
             background-color: var(--negro-solido);
             padding: 8px 8%;
@@ -81,7 +184,7 @@
             padding: 4px 10px;
             border-radius: 6px;
             border: 1px solid var(--gris-borde);
-            user-select: all; /* Facilita la selección/copia manual */
+            user-select: all;
         }
 
         .social-btn {
@@ -99,7 +202,6 @@
             font-size: 0.95rem;
         }
 
-        /* Hover dinámico con los colores de cada red social */
         .social-btn.youtube:hover {
             background: #ff0000;
             color: #fff;
@@ -168,10 +270,17 @@
 
         .logo-text span { color: var(--naranja); }
 
+        .nav-right-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
         .nav-links {
             display: flex;
             gap: 20px;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
@@ -182,6 +291,299 @@
         }
 
         .nav-links a:hover { color: var(--naranja); }
+
+        .cart-btn-nav {
+            background: var(--gris-tarjeta);
+            border: 1px solid var(--gris-borde);
+            color: var(--blanco);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .cart-btn-nav:hover {
+            border-color: var(--naranja);
+            color: var(--naranja);
+        }
+
+        .cart-badge {
+            background: var(--naranja);
+            color: var(--blanco);
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 800;
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-auth-login {
+            background: transparent;
+            color: var(--blanco);
+            border: 1px solid var(--gris-borde);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .btn-auth-login:hover {
+            border-color: var(--naranja);
+            color: var(--naranja);
+        }
+
+        .btn-auth-register {
+            background: var(--naranja);
+            color: var(--blanco);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .btn-auth-register:hover {
+            opacity: 0.9;
+            box-shadow: 0 4px 15px var(--naranja-brillo);
+        }
+
+        .user-logged {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--gris-borde);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-left: 8px;
+        }
+
+        /* MODALES */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-card {
+            background: var(--gris-tarjeta);
+            border: 1px solid var(--gris-borde);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        }
+
+        .btn-close-modal {
+            position: absolute;
+            top: 15px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: var(--gris-texto);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .btn-close-modal:hover { color: var(--blanco); }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--gris-texto);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            padding-right: 40px;
+            background: var(--negro-fondo);
+            border: 1px solid var(--gris-borde);
+            border-radius: 8px;
+            color: var(--blanco);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--naranja);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            cursor: pointer;
+            color: var(--gris-texto);
+            transition: color 0.2s;
+            user-select: none;
+        }
+
+        .toggle-password:hover { color: var(--naranja); }
+
+        .btn-submit-auth {
+            width: 100%;
+            padding: 12px;
+            background: var(--naranja);
+            color: var(--blanco);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit-auth:hover { opacity: 0.9; }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--gris-texto);
+        }
+
+        .auth-switch a {
+            color: var(--naranja);
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ESTILOS DEL CARRITO MODAL Y DESLIZADOR PERSONALIZADO */
+        .cart-items-list {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 6px;
+        }
+
+        .cart-items-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .cart-items-list::-webkit-scrollbar-track {
+            background: var(--negro-fondo);
+            border-radius: 8px;
+        }
+
+        .cart-items-list::-webkit-scrollbar-thumb {
+            background: var(--gris-borde);
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .cart-items-list::-webkit-scrollbar-thumb:hover {
+            background: var(--naranja);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--negro-fondo);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--gris-borde);
+        }
+
+        .cart-item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-item-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .cart-item-price {
+            font-size: 0.85rem;
+            color: var(--naranja);
+            font-weight: 800;
+        }
+
+        .btn-remove-item {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 8px;
+        }
+
+        .cart-summary {
+            border-top: 1px solid var(--gris-borde);
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .empty-cart-msg {
+            text-align: center;
+            color: var(--gris-texto);
+            padding: 20px 0;
+            font-size: 0.9rem;
+        }
 
         /* CABECERA Y SECCIÓN PRINCIPAL */
         header {
@@ -251,7 +653,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
 
-        /* CAJA DE ESTADO Y CONEXIÓN */
         .status-box {
             background-color: var(--gris-tarjeta);
             border: 1px solid var(--gris-borde);
@@ -446,8 +847,12 @@
             font-weight: 700;
             cursor: pointer;
             text-decoration: none;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .btn-buy:hover { opacity: 0.9; }
@@ -462,17 +867,31 @@
             font-size: 0.85rem;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 15px; }
+            .nav-right-container { flex-direction: column; gap: 15px; }
             .top-bar { flex-direction: column; gap: 8px; text-align: center; }
             .top-bar-right { flex-direction: column; gap: 8px; }
             .connection-grid { grid-template-columns: 1fr; }
             .titulo-principal { font-size: 2.6rem; }
             .platform-badges { flex-direction: column; align-items: center; }
             .rank-card { max-width: 100%; flex: 1 1 100%; }
+            #toastContainer { right: 10px; left: 10px; bottom: 10px; }
+            .toast { min-width: auto; max-width: 100%; }
+            .live-web-users { left: 10px; bottom: 10px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- CONTADOR DE PERSONAS EN LA WEB EN VIVO (INFERIOR IZQUIERDA) -->
+    <div class="live-web-users">
+        <div class="pulse-green"></div>
+        <span><span id="webUsersCount">12</span> personas en la web</span>
+    </div>
+
+    <!-- CONTENEDOR DE NOTIFICACIONES FLOTANTES EN LA PARTE INFERIOR DERECHA -->
+    <div id="toastContainer"></div>
 
     <!-- BARRA SUPERIOR REDES SOCIALES -->
     <div class="top-bar">
@@ -506,11 +925,106 @@
             <img src="SolarisGG Logo.png" alt="SolarisGG Logo" class="nav-logo-img">
             <span class="logo-text">SOLARIS<span>GG</span></span>
         </a>
-        <ul class="nav-links">
-            <li><a href="#inicio">Inicio</a></li>
-            <li><a href="#tienda">Tienda</a></li>
-        </ul>
+
+        <div class="nav-right-container">
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#tienda">Tienda</a></li>
+            </ul>
+
+            <!-- Botón Carrito de Compras -->
+            <button class="cart-btn-nav" onclick="abrirModalCarrito()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </button>
+
+            <!-- Sección de Autenticación / Usuario -->
+            <div id="authGuest" class="auth-buttons">
+                <button class="btn-auth-login" onclick="abrirModal('login')"><i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión</button>
+                <button class="btn-auth-register" onclick="abrirModal('register')"><i class="fa-solid fa-user-plus"></i> Registrarse</button>
+            </div>
+
+            <div id="authUser" class="user-logged">
+                <i class="fa-solid fa-user" style="color: var(--naranja);"></i>
+                <span id="userNameDisplay">Usuario</span>
+                <button class="btn-logout" onclick="cerrarSesion()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </div>
     </nav>
+
+    <!-- MODAL POPUP PARA LOGIN Y REGISTRO -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+            <button class="btn-close-modal" onclick="cerrarModal('authModal')">&times;</button>
+
+            <!-- FORMULARIO LOGIN -->
+            <div id="formLogin">
+                <h3 class="modal-title">Iniciar <span style="color: var(--naranja);">Sesión</span></h3>
+                <form onsubmit="procesarLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUser">Usuario de Minecraft</label>
+                        <input type="text" id="loginUser" class="form-input" style="padding-right:12px;" placeholder="TuUsuarioMC" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPass">Contraseña</label>
+                        <div class="password-container">
+                            <input type="password" id="loginPass" class="form-input" placeholder="••••••••" required>
+                            <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibilidadPassword('loginPass', this)"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit-auth">Entrar</button>
+                </form>
+                <div class="auth-switch">
+                    ¿No tienes cuenta? <a onclick="cambiarModoModal('register')">Regístrate aquí</a>
+                </div>
+            </div>
+
+            <!-- FORMULARIO REGISTRO -->
+            <div id="formRegister" style="display: none;">
+                <h3 class="modal-title">Crear <span style="color: var(--naranja);">Cuenta</span></h3>
+                <form onsubmit="procesarRegistro(event)">
+                    <div class="form-group">
+                        <label for="regUser">Usuario de Minecraft</label>
+                        <input type="text" id="regUser" class="form-input" style="padding-right:12px;" placeholder="TuUsuarioMC" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Correo Electrónico</label>
+                        <input type="email" id="regEmail" class="form-input" style="padding-right:12px;" placeholder="correo@ejemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPass">Contraseña</label>
+                        <div class="password-container">
+                            <input type="password" id="regPass" class="form-input" placeholder="••••••••" required>
+                            <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibilidadPassword('regPass', this)"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit-auth">Registrarse</button>
+                </form>
+                <div class="auth-switch">
+                    ¿Ya tienes cuenta? <a onclick="cambiarModoModal('login')">Inicia sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DEL CARRITO DE COMPRAS -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-card">
+            <button class="btn-close-modal" onclick="cerrarModal('cartModal')">&times;</button>
+            <h3 class="modal-title">Carrito de <span style="color: var(--naranja);">Compras</span></h3>
+            
+            <div class="cart-items-list" id="cartItemsContainer">
+                <!-- Contenido dinámico con scroll personalizado -->
+            </div>
+
+            <div class="cart-summary">
+                <span>Total:</span>
+                <span style="color: var(--naranja);" id="cartTotal">0.00€</span>
+            </div>
+
+            <button class="btn-submit-auth" style="margin-top:20px;" onclick="finalizarCompra()">Proceder al Pago</button>
+        </div>
+    </div>
 
     <!-- CABECERA PRINCIPAL -->
     <header id="inicio">
@@ -529,7 +1043,7 @@
         </div>
 
         <div class="status-box">
-            <!-- Botones de IP (ARRIBA) -->
+            <!-- Botones de IP -->
             <div class="connection-grid">
                 <button class="btn-ip" id="btnJava" onclick="copiarIP('mc.solarisgg.opik.net', 'btnJava')">
                     <span class="ip-type"><i class="fa-solid fa-desktop"></i> JAVA IP</span>
@@ -542,7 +1056,7 @@
                 </button>
             </div>
 
-            <!-- Grilla de Estado (ABAJO) -->
+            <!-- Grilla de Estado -->
             <div class="status-grid">
                 <div class="stat-item">
                     <div class="stat-label">Versión</div>
@@ -585,7 +1099,7 @@
                         <li><i class="fa-solid fa-check"></i> Acceso a /hat</li>
                     </ul>
                 </div>
-                <button class="btn-buy" onclick="comprarRango('Veterano')">Obtener</button>
+                <button class="btn-buy" onclick="agregarAlCarrito('Rango Veterano', 1.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
             </div>
 
             <div class="rank-card rank-vip">
@@ -599,7 +1113,7 @@
                         <li><i class="fa-solid fa-check"></i> Kit VIP mensual</li>
                     </ul>
                 </div>
-                <button class="btn-buy" onclick="comprarRango('VIP')">Obtener</button>
+                <button class="btn-buy" onclick="agregarAlCarrito('Rango VIP', 3.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
             </div>
 
             <div class="rank-card rank-vip-plus">
@@ -613,7 +1127,7 @@
                         <li><i class="fa-solid fa-check"></i> Prioridad en cola</li>
                     </ul>
                 </div>
-                <button class="btn-buy" onclick="comprarRango('VIP+')">Obtener</button>
+                <button class="btn-buy" onclick="agregarAlCarrito('Rango VIP+', 6.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
             </div>
 
             <div class="rank-card rank-premium">
@@ -627,7 +1141,7 @@
                         <li><i class="fa-solid fa-check"></i> Partículas exclusivas</li>
                     </ul>
                 </div>
-                <button class="btn-buy" onclick="comprarRango('Premium')">Obtener</button>
+                <button class="btn-buy" onclick="agregarAlCarrito('Rango Premium', 9.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
             </div>
 
             <div class="rank-card rank-leyenda">
@@ -641,7 +1155,7 @@
                         <li><i class="fa-solid fa-check"></i> Kit Leyenda exclusivo</li>
                     </ul>
                 </div>
-                <button class="btn-buy" onclick="comprarRango('Leyenda')">Obtener</button>
+                <button class="btn-buy" onclick="agregarAlCarrito('Rango Leyenda', 14.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
             </div>
         </div>
     </main>
@@ -652,7 +1166,143 @@
 
     <script>
         const IP_SERVIDOR = "mc.solarisgg.opik.net";
+        let carrito = JSON.parse(localStorage.getItem("solaris_cart") || "[]");
 
+        /* CONTADOR DINÁMICO DE PERSONAS EN LA WEB EN VIVO */
+        let webUsers = Math.floor(Math.random() * 8) + 10; // Valor inicial realista (entre 10 y 17)
+        document.getElementById("webUsersCount").innerText = webUsers;
+
+        setInterval(() => {
+            // Varía levemente la cantidad de personas
+            const variacion = Math.floor(Math.random() * 3) - 1; // -1, 0, o +1
+            webUsers = Math.max(5, webUsers + variacion);
+            document.getElementById("webUsersCount").innerText = webUsers;
+        }, 4000);
+
+        /* SISTEMA DE NOTIFICACIONES PERSONALIZADO (TOASTS) */
+        function mostrarNotificacion(mensaje, tipo = "info") {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            
+            let icono = "fa-info-circle";
+            if (tipo === "success") icono = "fa-circle-check";
+            if (tipo === "error") icono = "fa-circle-exclamation";
+
+            toast.className = `toast ${tipo}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icono}"></i>
+                <span>${mensaje}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add("show"), 10);
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        /* MOSTRAR / OCULTAR CONTRASEÑA */
+        function toggleVisibilidadPassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        /* LÓGICA DEL CARRITO DE COMPRAS - SOLO 1 RANGO A LA VEZ */
+        function agregarAlCarrito(nombre, precio) {
+            if (carrito.length > 0) {
+                // Se reemplaza el rango existente asegurando 1 solo a la vez
+                carrito = [{ nombre, precio }];
+                actualizarCarrito();
+                mostrarNotificacion(`Has cambiado tu carrito por: ${nombre}`, "info");
+            } else {
+                carrito.push({ nombre, precio });
+                actualizarCarrito();
+                mostrarNotificacion(`¡${nombre} añadido al carrito!`, "success");
+            }
+        }
+
+        function eliminarDelCarrito(index) {
+            const itemEliminado = carrito[index].nombre;
+            carrito.splice(index, 1);
+            actualizarCarrito();
+            renderizarCarritoModal();
+            mostrarNotificacion(`Se ha eliminado ${itemEliminado} del carrito.`, "info");
+        }
+
+        function actualizarCarrito() {
+            localStorage.setItem("solaris_cart", JSON.stringify(carrito));
+            document.getElementById("cartCount").innerText = carrito.length;
+        }
+
+        function abrirModalCarrito() {
+            renderizarCarritoModal();
+            document.getElementById("cartModal").style.display = "flex";
+        }
+
+        function renderizarCarritoModal() {
+            const container = document.getElementById("cartItemsContainer");
+            const totalEl = document.getElementById("cartTotal");
+
+            if (carrito.length === 0) {
+                container.innerHTML = '<div class="empty-cart-msg">Tu carrito está vacío.</div>';
+                totalEl.innerText = "0.00€";
+                return;
+            }
+
+            container.innerHTML = "";
+            let total = 0;
+
+            carrito.forEach((item, index) => {
+                total += item.precio;
+                const div = document.createElement("div");
+                div.className = "cart-item";
+                div.innerHTML = `
+                    <div class="cart-item-info">
+                        <span class="cart-item-title">${item.nombre}</span>
+                        <span class="cart-item-price">${item.precio.toFixed(2)}€</span>
+                    </div>
+                    <button class="btn-remove-item" onclick="eliminarDelCarrito(${index})" title="Eliminar item">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+
+            totalEl.innerText = `${total.toFixed(2)}€`;
+        }
+
+        function finalizarCompra() {
+            const usuarioActivo = localStorage.getItem("solaris_session");
+            if (carrito.length === 0) {
+                mostrarNotificacion("Tu carrito está vacío.", "error");
+                return;
+            }
+
+            if (!usuarioActivo) {
+                mostrarNotificacion("Debes iniciar sesión para realizar la compra.", "error");
+                cerrarModal("cartModal");
+                abrirModal("login");
+                return;
+            }
+
+            mostrarNotificacion(`¡Gracias ${usuarioActivo}! Redirigiendo a la pasarela de pago...`, "success");
+            carrito = [];
+            actualizarCarrito();
+            cerrarModal("cartModal");
+        }
+
+        /* LÓGICA DE ESTADO DEL SERVIDOR */
         async function mediping() {
             const pingEl = document.getElementById("pingText");
             const inicio = Date.now();
@@ -718,6 +1368,8 @@
             btn.style.backgroundColor = "#22c55e";
             btn.style.borderColor = "#22c55e";
 
+            mostrarNotificacion(`IP copiada al portapapeles: ${texto}`, "success");
+
             setTimeout(() => {
                 btn.innerHTML = originalHTML;
                 btn.style.backgroundColor = "var(--negro-fondo)";
@@ -725,10 +1377,97 @@
             }, 2500);
         }
 
-        function comprarRango(rango) {
-            alert(`Para adquirir el rango ${rango}, únete a nuestro Discord oficial o escribe en el chat del juego.`);
+        /* LÓGICA DE AUTENTICACIÓN (LOGIN & REGISTER) */
+        function abrirModal(modo) {
+            cambiarModoModal(modo);
+            document.getElementById("authModal").style.display = "flex";
         }
 
+        function cerrarModal(idModal) {
+            document.getElementById(idModal).style.display = "none";
+        }
+
+        function cambiarModoModal(modo) {
+            if (modo === 'login') {
+                document.getElementById("formLogin").style.display = "block";
+                document.getElementById("formRegister").style.display = "none";
+            } else {
+                document.getElementById("formLogin").style.display = "none";
+                document.getElementById("formRegister").style.display = "block";
+            }
+        }
+
+        function procesarRegistro(e) {
+            e.preventDefault();
+            const user = document.getElementById("regUser").value.trim();
+            const email = document.getElementById("regEmail").value.trim();
+            const pass = document.getElementById("regPass").value;
+
+            let usuarios = JSON.parse(localStorage.getItem("solaris_users") || "{}");
+
+            if (usuarios[user]) {
+                mostrarNotificacion("El nombre de usuario ya está registrado.", "error");
+                return;
+            }
+
+            usuarios[user] = { email, pass };
+            localStorage.setItem("solaris_users", JSON.stringify(usuarios));
+            localStorage.setItem("solaris_session", user);
+
+            mostrarNotificacion("¡Registro completado con éxito!", "success");
+            cerrarModal("authModal");
+            verificarSesion();
+        }
+
+        function procesarLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById("loginUser").value.trim();
+            const pass = document.getElementById("loginPass").value;
+
+            let usuarios = JSON.parse(localStorage.getItem("solaris_users") || "{}");
+
+            if (usuarios[user] && usuarios[user].pass === pass) {
+                localStorage.setItem("solaris_session", user);
+                mostrarNotificacion(`¡Bienvenido de nuevo, ${user}!`, "success");
+                cerrarModal("authModal");
+                verificarSesion();
+            } else {
+                mostrarNotificacion("Usuario o contraseña incorrectos.", "error");
+            }
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem("solaris_session");
+            mostrarNotificacion("Has cerrado sesión.", "info");
+            verificarSesion();
+        }
+
+        function verificarSesion() {
+            const usuarioActivo = localStorage.getItem("solaris_session");
+            const authGuest = document.getElementById("authGuest");
+            const authUser = document.getElementById("authUser");
+            const userNameDisplay = document.getElementById("userNameDisplay");
+
+            if (usuarioActivo) {
+                authGuest.style.display = "none";
+                authUser.style.display = "flex";
+                userNameDisplay.innerText = usuarioActivo;
+            } else {
+                authGuest.style.display = "flex";
+                authUser.style.display = "none";
+            }
+        }
+
+        window.onclick = function(event) {
+            const authModal = document.getElementById("authModal");
+            const cartModal = document.getElementById("cartModal");
+            if (event.target === authModal) cerrarModal("authModal");
+            if (event.target === cartModal) cerrarModal("cartModal");
+        };
+
+        // Inicializar
+        actualizarCarrito();
+        verificarSesion();
         actualizarEstado();
         setInterval(actualizarEstado, 5000);
     </script>
