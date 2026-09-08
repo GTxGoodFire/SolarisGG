@@ -1,1475 +1,1537 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolarisGG Network - Java & Bedrock</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="SolarisGG Logo.png">
-
-    <!-- FontAwesome para los iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --naranja: #ff6b00;
-            --naranja-brillo: rgba(255, 107, 0, 0.4);
-            --blanco: #ffffff;
-            --gris-claro: #f3f4f6;
-            --gris-texto: #a1a1aa;
-            --gris-tarjeta: #14161d;
-            --gris-borde: #272a36;
-            --negro-fondo: #0a0b0e;
-            --negro-solido: #030405;
-            --verde-exito: #22c55e;
-            --rojo-error: #ef4444;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-
-        /* BARRA DE DESLIZAMIENTO GLOBAL DE LA WEB (SCROLLBAR) */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--negro-solido);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--gris-borde);
-            border-radius: 5px;
-            border: 2px solid var(--negro-solido);
-            transition: background 0.2s;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--naranja);
-        }
-
-        body {
-            background-color: var(--negro-fondo);
-            color: var(--blanco);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(255, 107, 0, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 80% 90%, rgba(255, 107, 0, 0.05) 0%, transparent 50%);
-        }
-
-        /* CONTADOR DE PERSONAS EN LA WEB EN VIVO (ABAJO A LA IZQUIERDA) */
-        .live-web-users {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 9999;
-            background: var(--gris-tarjeta);
-            border: 1px solid var(--gris-borde);
-            padding: 10px 16px;
-            border-radius: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--blanco);
-            backdrop-filter: blur(8px);
-        }
-
-        .pulse-green {
-            width: 10px;
-            height: 10px;
-            background-color: var(--verde-exito);
-            border-radius: 50%;
-            animation: pulse-green-anim 1.8s infinite;
-        }
-
-        @keyframes pulse-green-anim {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
-
-        /* CONTENEDOR DE NOTIFICACIONES EN LA PARTE INFERIOR DERECHA */
-        #toastContainer {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column-reverse;
-            gap: 10px;
-            pointer-events: none;
-        }
-
-        .toast {
-            background: var(--gris-tarjeta);
-            border: 1px solid var(--gris-borde);
-            border-left: 4px solid var(--naranja);
-            color: var(--blanco);
-            padding: 14px 18px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 280px;
-            max-width: 380px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            pointer-events: auto;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success { border-left-color: var(--verde-exito); }
-        .toast.success i { color: var(--verde-exito); }
-
-        .toast.error { border-left-color: var(--rojo-error); }
-        .toast.error i { color: var(--rojo-error); }
-
-        .toast.info { border-left-color: var(--naranja); }
-        .toast.info i { color: var(--naranja); }
-
-        /* BARRA SUPERIOR - REDES SOCIALES */
-        .top-bar {
-            background-color: var(--negro-solido);
-            padding: 8px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--gris-borde);
-            font-size: 0.85rem;
-        }
-
-        .top-bar-left {
-            color: var(--gris-texto);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-        }
-
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .social-links {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .social-tag {
-            font-weight: 800;
-            color: var(--blanco);
-            letter-spacing: 0.5px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 10px;
-            border-radius: 6px;
-            border: 1px solid var(--gris-borde);
-            user-select: all;
-        }
-
-        .social-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--gris-claro);
-            text-decoration: none;
-            transition: all 0.25s ease;
-            border: 1px solid var(--gris-borde);
-            font-size: 0.95rem;
-        }
-
-        .social-btn.youtube:hover {
-            background: #ff0000;
-            color: #fff;
-            border-color: #ff0000;
-            box-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .social-btn.tiktok:hover {
-            background: #000;
-            color: #00f2fe;
-            border-color: #fe2c55;
-            box-shadow: 0 0 12px rgba(254, 44, 85, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .social-btn.instagram:hover {
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            color: #fff;
-            border-color: #dc2743;
-            box-shadow: 0 0 12px rgba(220, 39, 67, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .social-btn.discord:hover {
-            background: #5865f2;
-            color: #fff;
-            border-color: #5865f2;
-            box-shadow: 0 0 12px rgba(88, 101, 242, 0.5);
-            transform: translateY(-2px);
-        }
-
-        /* NAVEGACIÓN PRINCIPAL */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 8%;
-            background-color: rgba(20, 22, 29, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--gris-borde);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .nav-logo-img {
-            width: 38px;
-            height: 38px;
-            object-fit: contain;
-        }
-
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--blanco);
-            letter-spacing: 1px;
-        }
-
-        .logo-text span { color: var(--naranja); }
-
-        .nav-right-container {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--gris-texto);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover { color: var(--naranja); }
-
-        .cart-btn-nav {
-            background: var(--gris-tarjeta);
-            border: 1px solid var(--gris-borde);
-            color: var(--blanco);
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            transition: all 0.2s;
-        }
-
-        .cart-btn-nav:hover {
-            border-color: var(--naranja);
-            color: var(--naranja);
-        }
-
-        .cart-badge {
-            background: var(--naranja);
-            color: var(--blanco);
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-weight: 800;
-        }
-
-        .auth-buttons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-auth-login {
-            background: transparent;
-            color: var(--blanco);
-            border: 1px solid var(--gris-borde);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .btn-auth-login:hover {
-            border-color: var(--naranja);
-            color: var(--naranja);
-        }
-
-        .btn-auth-register {
-            background: var(--naranja);
-            color: var(--blanco);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .btn-auth-register:hover {
-            opacity: 0.9;
-            box-shadow: 0 4px 15px var(--naranja-brillo);
-        }
-
-        .user-logged {
-            display: none;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px 14px;
-            border-radius: 8px;
-            border: 1px solid var(--gris-borde);
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .btn-logout {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 0.85rem;
-            margin-left: 8px;
-        }
-
-        /* MODALES */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-card {
-            background: var(--gris-tarjeta);
-            border: 1px solid var(--gris-borde);
-            width: 100%;
-            max-width: 420px;
-            border-radius: 16px;
-            padding: 30px;
-            position: relative;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-        }
-
-        .btn-close-modal {
-            position: absolute;
-            top: 15px;
-            right: 18px;
-            background: none;
-            border: none;
-            color: var(--gris-texto);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .btn-close-modal:hover { color: var(--blanco); }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--gris-texto);
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .password-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            padding-right: 40px;
-            background: var(--negro-fondo);
-            border: 1px solid var(--gris-borde);
-            border-radius: 8px;
-            color: var(--blanco);
-            font-size: 0.9rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .form-input:focus {
-            border-color: var(--naranja);
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            cursor: pointer;
-            color: var(--gris-texto);
-            transition: color 0.2s;
-            user-select: none;
-        }
-
-        .toggle-password:hover { color: var(--naranja); }
-
-        .btn-submit-auth {
-            width: 100%;
-            padding: 12px;
-            background: var(--naranja);
-            color: var(--blanco);
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: opacity 0.2s;
-        }
-
-        .btn-submit-auth:hover { opacity: 0.9; }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: var(--gris-texto);
-        }
-
-        .auth-switch a {
-            color: var(--naranja);
-            text-decoration: none;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* ESTILOS DEL CARRITO MODAL Y DESLIZADOR PERSONALIZADO */
-        .cart-items-list {
-            max-height: 250px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-right: 6px;
-        }
-
-        .cart-items-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .cart-items-list::-webkit-scrollbar-track {
-            background: var(--negro-fondo);
-            border-radius: 8px;
-        }
-
-        .cart-items-list::-webkit-scrollbar-thumb {
-            background: var(--gris-borde);
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-
-        .cart-items-list::-webkit-scrollbar-thumb:hover {
-            background: var(--naranja);
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--negro-fondo);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--gris-borde);
-        }
-
-        .cart-item-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-item-title {
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
-
-        .cart-item-price {
-            font-size: 0.85rem;
-            color: var(--naranja);
-            font-weight: 800;
-        }
-
-        .btn-remove-item {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 4px 8px;
-        }
-
-        .cart-summary {
-            border-top: 1px solid var(--gris-borde);
-            padding-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.1rem;
-            font-weight: 800;
-        }
-
-        .empty-cart-msg {
-            text-align: center;
-            color: var(--gris-texto);
-            padding: 20px 0;
-            font-size: 0.9rem;
-        }
-
-        /* CABECERA Y SECCIÓN PRINCIPAL */
-        header {
-            text-align: center;
-            padding: 40px 20px 30px;
-        }
-
-        .logo-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .server-logo {
-            width: 140px;
-            height: 140px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 25px var(--naranja-brillo));
-            margin-bottom: 15px;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .server-logo:hover {
-            transform: scale(1.08) rotate(2deg);
-        }
-
-        .titulo-principal {
-            font-size: 3.5rem;
-            font-weight: 900;
-            color: var(--blanco);
-            letter-spacing: 1px;
-        }
-
-        .titulo-principal span { color: var(--naranja); }
-
-        .platform-badges {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 15px 0 20px;
-        }
-
-        .badge {
-            background-color: var(--gris-tarjeta);
-            border: 1px solid var(--gris-borde);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--gris-claro);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .badge i { color: var(--naranja); }
-
-        .motd-container {
-            background: var(--gris-tarjeta);
-            border: 1px solid var(--gris-borde);
-            border-left: 4px solid var(--naranja);
-            padding: 15px 20px;
-            border-radius: 10px;
-            max-width: 650px;
-            margin: 0 auto 30px;
-            color: var(--gris-claro);
-            font-size: 0.98rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-
-        .status-box {
-            background-color: var(--gris-tarjeta);
-            border: 1px solid var(--gris-borde);
-            max-width: 650px;
-            margin: 0 auto;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.6);
-        }
-
-        .connection-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .btn-ip {
-            background-color: var(--negro-fondo);
-            border: 1px solid var(--naranja);
-            color: var(--blanco);
-            padding: 14px 10px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-ip:hover {
-            background-color: var(--naranja);
-            box-shadow: 0 4px 20px var(--naranja-brillo);
-            transform: translateY(-2px);
-        }
-
-        .btn-ip span.ip-type {
-            font-size: 0.75rem;
-            color: var(--gris-texto);
-            text-transform: uppercase;
-        }
-
-        .btn-ip:hover span.ip-type { color: var(--blanco); }
-
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .stat-item {
-            background: var(--negro-fondo);
-            padding: 14px 10px;
-            border-radius: 10px;
-            border: 1px solid var(--gris-borde);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--gris-texto);
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .stat-val {
-            font-size: 1.1rem;
-            font-weight: 800;
-            margin-top: 4px;
-            color: var(--blanco);
-        }
-
-        .live-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            color: var(--blanco);
-            margin-top: 18px;
-        }
-
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--naranja);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(255, 107, 0, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
-        }
-
-        /* TIENDA DE RANGOS */
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 25px;
-            color: var(--blanco);
-        }
-
-        .section-title span { color: var(--naranja); }
-
-        .ranks-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .rank-card {
-            background: var(--gris-tarjeta);
-            border: 1px solid var(--gris-borde);
-            border-radius: 12px;
-            padding: 22px 18px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            flex: 1 1 200px;
-            max-width: 240px;
-            min-width: 200px;
-        }
-
-        .rank-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--naranja);
-            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.2);
-        }
-
-        .rank-name {
-            font-size: 1.25rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .rank-veterano .rank-name { color: #a855f7; }
-        .rank-vip .rank-name { color: #3b82f6; }
-        .rank-vip-plus .rank-name { color: #06b6d4; }
-        .rank-premium .rank-name { color: #eab308; }
-        .rank-leyenda .rank-name { color: #ef4444; }
-
-        .rank-leyenda {
-            border-color: rgba(239, 68, 68, 0.5);
-            background: linear-gradient(180deg, var(--gris-tarjeta) 0%, rgba(239, 68, 68, 0.08) 100%);
-        }
-
-        .rank-price {
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: var(--blanco);
-            margin: 10px 0 15px;
-        }
-
-        .rank-features {
-            list-style: none;
-            font-size: 0.85rem;
-            color: var(--gris-texto);
-            text-align: left;
-            margin-bottom: 20px;
-            line-height: 1.8;
-        }
-
-        .rank-features li i {
-            color: #22c55e;
-            margin-right: 6px;
-        }
-
-        .btn-buy {
-            background: var(--naranja);
-            color: var(--blanco);
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-buy:hover { opacity: 0.9; }
-
-        footer {
-            margin-top: auto;
-            background-color: var(--negro-solido);
-            border-top: 1px solid var(--gris-borde);
-            padding: 25px 20px;
-            text-align: center;
-            color: var(--gris-texto);
-            font-size: 0.85rem;
-        }
-
-        @media (max-width: 768px) {
-            nav { flex-direction: column; gap: 15px; }
-            .nav-right-container { flex-direction: column; gap: 15px; }
-            .top-bar { flex-direction: column; gap: 8px; text-align: center; }
-            .top-bar-right { flex-direction: column; gap: 8px; }
-            .connection-grid { grid-template-columns: 1fr; }
-            .titulo-principal { font-size: 2.6rem; }
-            .platform-badges { flex-direction: column; align-items: center; }
-            .rank-card { max-width: 100%; flex: 1 1 100%; }
-            #toastContainer { right: 10px; left: 10px; bottom: 10px; }
-            .toast { min-width: auto; max-width: 100%; }
-            .live-web-users { left: 10px; bottom: 10px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SolarisGG Network - Java & Bedrock</title>
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="SolarisGG Logo.png">
+
+<!-- FontAwesome para los iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --naranja: #ff6600;
+    --naranja-brillo: rgba(255, 107, 0, 0.4);
+    --blanco: #ffffff;
+    --gris-claro: #f3f4f6;
+    --gris-texto: #a1a1aa;
+    --gris-tarjeta: #14161d;
+    --gris-borde: #272a36;
+    --negro-fondo: #0a0b0e;
+    --negro-solido: #030405;
+    --verde-exito: #22c55e;
+    --rojo-error: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* BARRA DE DESLIZAMIENTO GLOBAL */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--negro-solido);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gris-borde);
+    border-radius: 5px;
+    border: 2px solid var(--negro-solido);
+    transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--naranja);
+}
+
+body {
+    background-color: var(--negro-fondo);
+    color: var(--blanco);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image:
+        radial-gradient(circle at 50% 0%, rgba(255, 107, 0, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 80% 90%, rgba(255, 107, 0, 0.05) 0%, transparent 50%);
+}
+
+/* CONTENEDOR DE NOTIFICACIONES */
+#toastContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--gris-tarjeta);
+    border: 1px solid var(--gris-borde);
+    border-left: 4px solid var(--naranja);
+    color: var(--blanco);
+    padding: 14px 18px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 280px;
+    max-width: 380px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: auto;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast.success { border-left-color: var(--verde-exito); }
+.toast.success i { color: var(--verde-exito); }
+.toast.error { border-left-color: var(--rojo-error); }
+.toast.error i { color: var(--rojo-error); }
+.toast.info { border-left-color: var(--naranja); }
+.toast.info i { color: var(--naranja); }
+
+/* BARRA SUPERIOR - REDES SOCIALES */
+.top-bar {
+    background-color: var(--negro-solido);
+    padding: 8px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--gris-borde);
+    font-size: 0.85rem;
+}
+
+.top-bar-left {
+    color: var(--gris-texto);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-tag {
+    font-weight: 800;
+    color: var(--blanco);
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--gris-borde);
+    user-select: all;
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--gris-claro);
+    text-decoration: none;
+    transition: all 0.25s ease;
+    border: 1px solid var(--gris-borde);
+    font-size: 0.95rem;
+}
+
+.social-btn.youtube:hover {
+    background: #ff0000;
+    color: #fff;
+    border-color: #ff0000;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+.social-btn.tiktok:hover {
+    background: #000;
+    color: #00f2fe;
+    border-color: #fe2c55;
+    box-shadow: 0 0 12px rgba(254, 44, 85, 0.5);
+    transform: translateY(-2px);
+}
+
+.social-btn.instagram:hover {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: #fff;
+    border-color: #dc2743;
+    box-shadow: 0 0 12px rgba(220, 39, 67, 0.5); 
+    transform: translateY(-2px);
+}
+
+.social-btn.discord:hover {
+    background: #5865f2;
+    color: #fff;
+    border-color: #5865f2;
+    box-shadow: 0 0 12px rgba(88, 101, 242, 0.5);
+    transform: translateY(-2px);
+}
+
+/* NAVEGACIÓN PRINCIPAL */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 8%;
+    background-color: rgba(20, 22, 29, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--gris-borde);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.nav-logo-img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--blanco);
+    letter-spacing: 1px;
+}
+
+.logo-text span { color: var(--naranja); }
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--blanco);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.nav-right-container { 
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--gris-texto);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--naranja); }
+
+.cart-btn-nav {
+    background: var(--gris-tarjeta);
+    border: 1px solid var(--gris-borde);
+    color: var(--blanco);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.cart-btn-nav:hover {
+    border-color: var(--naranja);
+    color: var(--naranja);
+}
+
+.cart-badge {
+    background: var(--naranja);
+    color: var(--blanco);
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 800; 
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-auth-login {
+    background: transparent;
+    color: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.btn-auth-login:hover {
+    border-color: var(--naranja);
+    color: var(--naranja);
+}
+
+.btn-auth-register {
+    background: var(--naranja);
+    color: var(--blanco);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.btn-auth-register:hover {
+    opacity: 0.9;
+    box-shadow: 0 4px 15px var(--naranja-brillo);
+}
+
+.user-logged {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--gris-borde);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.btn-logout {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-left: 8px;
+}
+
+/* MODALES */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.modal-card {
+    background: var(--gris-tarjeta);
+    border: 1px solid var(--gris-borde);
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+}
+
+.btn-close-modal {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    background: none;
+    border: none;
+    color: var(--gris-texto);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.btn-close-modal:hover { color: var(--blanco); }
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gris-texto);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    padding-right: 40px;
+    background: var(--negro-fondo);
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    color: var(--blanco);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: var(--naranja);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    color: var(--gris-texto);
+    transition: color 0.2s;
+    user-select: none;
+}
+
+.toggle-password:hover { color: var(--naranja); }
+
+.btn-submit-auth {
+    width: 100%;
+    padding: 12px;
+    background: var(--naranja);
+    color: var(--blanco);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: opacity 0.2s;
+}
+
+.btn-submit-auth:hover { opacity: 0.9; }
+
+.auth-switch {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: var(--gris-texto);
+}
+
+.auth-switch a {
+    color: var(--naranja);
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* CARRITO MODAL Y SCROLLBAR */
+.cart-items-list {
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    padding-right: 6px;
+}
+
+.cart-items-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-items-list::-webkit-scrollbar-track {
+    background: var(--negro-fondo);
+    border-radius: 8px;
+}
+
+.cart-items-list::-webkit-scrollbar-thumb {
+    background: var(--gris-borde);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.cart-items-list::-webkit-scrollbar-thumb:hover {
+    background: var(--naranja);
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--negro-fondo);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--gris-borde);
+}
+
+.cart-item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-item-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.cart-item-price {
+    font-size: 0.85rem;
+    color: var(--naranja);
+    font-weight: 800;
+}
+
+.btn-remove-item {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 8px;
+}
+
+.cart-summary {
+    border-top: 1px solid var(--gris-borde);
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.empty-cart-msg {
+    text-align: center;
+    color: var(--gris-texto);
+    padding: 20px 0;
+    font-size: 0.9rem;
+}
+
+/* CABECERA Y ESTADO */
+header {
+    text-align: center;
+    padding: 40px 20px 30px;
+}
+
+.logo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.server-logo {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 25px var(--naranja-brillo));
+    margin-bottom: 15px;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.server-logo:hover {
+    transform: scale(1.08) rotate(2deg);
+}
+
+.titulo-principal {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--blanco);
+    letter-spacing: 1px;
+}
+
+.titulo-principal span { color: var(--naranja); }
+
+.platform-badges {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0 20px;
+}
+
+.badge {
+    background-color: var(--gris-tarjeta);
+    border: 1px solid var(--gris-borde);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gris-claro);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge i { color: var(--naranja); }
+
+.motd-container {
+    background: var(--gris-tarjeta);
+    border: 1px solid var(--gris-borde);
+    border-left: 4px solid var(--naranja);
+    padding: 15px 20px;
+    border-radius: 10px;
+    max-width: 650px;
+    margin: 0 auto 30px;
+    color: var(--gris-claro);
+    font-size: 0.98rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.status-box {
+    background-color: var(--gris-tarjeta); 
+    border: 1px solid var(--gris-borde);
+    max-width: 650px;
+    margin: 0 auto;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+}
+
+.connection-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.btn-ip {
+    background-color: var(--negro-fondo);
+    border: 1px solid var(--naranja);
+    color: var(--blanco);
+    padding: 14px 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.btn-ip:hover {
+    background-color: var(--naranja);
+    box-shadow: 0 4px 20px var(--naranja-brillo);
+    transform: translateY(-2px);
+}
+
+.btn-ip span.ip-type {
+    font-size: 0.75rem;
+    color: var(--gris-texto);
+    text-transform: uppercase;
+}
+
+.btn-ip:hover span.ip-type { color: var(--blanco); }
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px;
+}
+
+.stat-item {
+    background: var(--negro-fondo);
+    padding: 14px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gris-borde);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--gris-texto);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.stat-val {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-top: 4px;
+    color: var(--blanco);
+}
+
+.live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--blanco);
+    margin-top: 18px;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--naranja);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(255, 107, 0, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
+}
+
+/* TIENDA DE RANGOS */ 
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    color: var(--blanco);
+}
+
+.section-title span { color: var(--naranja); }
+
+.ranks-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.rank-card {
+    background: var(--gris-tarjeta);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 22px 18px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    flex: 1 1 200px;
+    max-width: 240px;
+    min-width: 200px;
+}
+
+.rank-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--naranja);
+    box-shadow: 0 8px 25px rgba(255, 107, 0, 0.2);
+}
+
+.rank-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rank-veterano .rank-name { color: #a855f7; }
+.rank-vip .rank-name { color: #3b82f6; }
+.rank-vip-plus .rank-name { color: #06b6d4; }
+.rank-premium .rank-name { color: #eab308; }
+.rank-leyenda .rank-name { color: #ef4444; }
+
+.rank-leyenda {
+    border-color: rgba(239, 68, 68, 0.5);
+    background: linear-gradient(180deg, var(--gris-tarjeta) 0%, rgba(239, 68, 68, 0.08) 100%);
+}
+
+.rank-price {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--blanco);
+    margin: 10px 0 15px;
+}
+
+.rank-features {
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--gris-texto);
+    text-align: left;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.rank-features li i {
+    color: #22c55e;
+    margin-right: 6px;
+}
+
+.btn-buy {
+    background: var(--naranja);
+    color: var(--blanco);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer; 
+    text-decoration: none;
+    transition: all 0.2s;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-buy:hover { opacity: 0.9; }
+
+footer {
+    margin-top: auto;
+    background-color: var(--negro-solido);
+    border-top: 1px solid var(--gris-borde);
+    padding: 25px 20px;
+    text-align: center;
+    color: var(--gris-texto);
+    font-size: 0.85rem;
+}
+
+/* MEDIA QUERIES (RESPONSIVE MÓVIL) */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .top-bar { 
+        flex-direction: column; 
+        gap: 8px; 
+        text-align: center; 
+    }
+
+    .top-bar-right { 
+        flex-direction: column; 
+        gap: 8px; 
+    }
+
+    .nav-right-container {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: var(--gris-tarjeta);
+        border-bottom: 1px solid var(--gris-borde);
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .nav-right-container.active {
+        display: flex;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .auth-buttons {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .btn-auth-login, .btn-auth-register {
+        width: 100%;
+    }
+
+    .connection-grid { 
+        grid-template-columns: 1fr; 
+    }
+
+    .status-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .titulo-principal { 
+        font-size: 2.6rem; 
+    }
+
+    .platform-badges { 
+        flex-direction: column; 
+        align-items: center; 
+    }
+
+    .rank-card { 
+        max-width: 100%; 
+        flex: 1 1 100%; 
+    }
+
+    #toastContainer {
+        right: 10px; 
+        left: 10px; 
+        bottom: 10px; 
+    }
+
+    .toast { 
+        min-width: auto; 
+        max-width: 100%; 
+    }
+}
+</style>
 </head>
 <body>
 
-    <!-- CONTADOR DE PERSONAS EN LA WEB EN VIVO (INFERIOR IZQUIERDA) -->
-    <div class="live-web-users">
-        <div class="pulse-green"></div>
-        <span><span id="webUsersCount">12</span> personas en la web</span>
+<!-- NOTIFICACIONES FLOTANTES -->
+<div id="toastContainer"></div>
+
+<!-- BARRA SUPERIOR REDES SOCIALES -->
+<div class="top-bar">
+    <div class="top-bar-left">
+        <i class="fa-solid fa-fire" style="color: var(--naranja);"></i>
+        <span>¡Únete a la comunidad de SolarisGG!</span>
     </div>
+    <div class="top-bar-right">
+        <div class="social-links">
+            <a href="https://www.youtube.com/@SolarisGGOficial" target="_blank" class="social-btn youtube" title="YouTube">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a href="https://www.tiktok.com/@solarisggoficial" target="_blank" class="social-btn tiktok" title="TikTok">
+                <i class="fa-brands fa-tiktok"></i>
+            </a>
+            <a href="https://www.instagram.com/solarisggoficial" target="_blank" class="social-btn instagram" title="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://discord.gg/rSMRKgnccq" target="_blank" class="social-btn discord" title="Discord">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+        </div>
+        <span class="social-tag">@solarisggoficial</span>
+    </div>
+</div>
 
-    <!-- CONTENEDOR DE NOTIFICACIONES FLOTANTES EN LA PARTE INFERIOR DERECHA -->
-    <div id="toastContainer"></div>
+<!-- NAVEGACIÓN -->
+<nav>
+    <a href="#" class="nav-brand">
+        <img src="SolarisGG Logo.png" alt="SolarisGG Logo" class="nav-logo-img">
+        <span class="logo-text">SOLARIS<span>GG</span></span>
+    </a>
 
-    <!-- BARRA SUPERIOR REDES SOCIALES -->
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <i class="fa-solid fa-fire" style="color: var(--naranja);"></i>
-            <span>¡Únete a la comunidad de SolarisGG!</span>
+    <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="nav-right-container" id="navContainer">
+        <ul class="nav-links">
+            <li><a href="#inicio" onclick="closeMenu()">Inicio</a></li>
+            <li><a href="#tienda" onclick="closeMenu()">Tienda</a></li>
+        </ul>
+
+        <!-- Botón Carrito -->
+        <button class="cart-btn-nav" onclick="abrirModalCarrito()">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-badge" id="cartCount">0</span>
+        </button>
+
+        <!-- Autenticación -->
+        <div id="authGuest" class="auth-buttons">
+            <button class="btn-auth-login" onclick="abrirModal('login')"><i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión</button>
+            <button class="btn-auth-register" onclick="abrirModal('register')"><i class="fa-solid fa-user-plus"></i> Registrarse</button>
         </div>
 
-        <div class="top-bar-right">
-            <div class="social-links">
-                <a href="https://www.youtube.com/@SolarisGGOficial" target="_blank" class="social-btn youtube" title="YouTube">
-                    <i class="fa-brands fa-youtube"></i>
-                </a>
-                <a href="https://www.tiktok.com/@solarisggoficial" target="_blank" class="social-btn tiktok" title="TikTok">
-                    <i class="fa-brands fa-tiktok"></i>
-                </a>
-                <a href="https://www.instagram.com/solarisggoficial" target="_blank" class="social-btn instagram" title="Instagram">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-                <a href="https://discord.gg/rSMRKgnccq" target="_blank" class="social-btn discord" title="Discord">
-                    <i class="fa-brands fa-discord"></i>
-                </a>
+        <div id="authUser" class="user-logged">
+            <i class="fa-solid fa-user" style="color: var(--naranja);"></i>
+            <span id="userNameDisplay">Usuario</span>
+            <button class="btn-logout" onclick="cerrarSesion()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
+        </div>
+    </div>
+</nav>
+
+<!-- MODAL POPUP PARA LOGIN Y REGISTRO -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal-card">
+        <button class="btn-close-modal" onclick="cerrarModal('authModal')">&times;</button>
+        
+        <!-- FORMULARIO LOGIN -->
+        <div id="formLogin">
+            <h3 class="modal-title">Iniciar <span style="color: var(--naranja);">Sesión</span></h3>
+            <form onsubmit="procesarLogin(event)">
+                <div class="form-group">
+                    <label for="loginUser">Usuario de Minecraft</label>
+                    <input type="text" id="loginUser" class="form-input" style="padding-right:12px;" placeholder="TuUsuarioMC" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPass">Contraseña</label>
+                    <div class="password-container">
+                        <input type="password" id="loginPass" class="form-input" placeholder="••••••••" required>
+                        <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibilidadPassword('loginPass', this)"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit-auth">Entrar</button>
+            </form>
+            <div class="auth-switch">
+                ¿No tienes cuenta? <a onclick="cambiarModoModal('register')">Regístrate aquí</a>
             </div>
-            <span class="social-tag">@solarisggoficial</span>
+        </div>
+
+        <!-- FORMULARIO REGISTRO -->
+        <div id="formRegister" style="display: none;">
+            <h3 class="modal-title">Crear <span style="color: var(--naranja);">Cuenta</span></h3>
+            <form onsubmit="procesarRegistro(event)">
+                <div class="form-group">
+                    <label for="regUser">Usuario de Minecraft</label>
+                    <input type="text" id="regUser" class="form-input" style="padding-right:12px;" placeholder="TuUsuarioMC" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Correo Electrónico</label>
+                    <input type="email" id="regEmail" class="form-input" style="padding-right:12px;" placeholder="correo@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPass">Contraseña</label>
+                    <div class="password-container">
+                        <input type="password" id="regPass" class="form-input" placeholder="••••••••" required>
+                        <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibilidadPassword('regPass', this)"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit-auth">Registrarse</button>
+            </form>
+            <div class="auth-switch">
+                ¿Ya tienes cuenta? <a onclick="cambiarModoModal('login')">Inicia sesión</a>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- NAVEGACIÓN -->
-    <nav>
-        <a href="#" class="nav-brand">
-            <img src="SolarisGG Logo.png" alt="SolarisGG Logo" class="nav-logo-img">
-            <span class="logo-text">SOLARIS<span>GG</span></span>
-        </a>
+<!-- MODAL DEL CARRITO DE COMPRAS -->
+<div class="modal-overlay" id="cartModal">
+    <div class="modal-card">
+        <button class="btn-close-modal" onclick="cerrarModal('cartModal')">&times;</button>
+        <h3 class="modal-title">Carrito de <span style="color: var(--naranja);">Compras</span></h3>
+        
+        <div class="cart-items-list" id="cartItemsContainer"></div>
 
-        <div class="nav-right-container">
-            <ul class="nav-links">
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#tienda">Tienda</a></li>
-            </ul>
+        <div class="cart-summary">
+            <span>Total:</span>
+            <span style="color: var(--naranja);" id="cartTotal">0.00€</span>
+        </div>
 
-            <!-- Botón Carrito de Compras -->
-            <button class="cart-btn-nav" onclick="abrirModalCarrito()">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span class="cart-badge" id="cartCount">0</span>
+        <button class="btn-submit-auth" style="margin-top:20px;" onclick="finalizarCompra()">Proceder al Pago</button>
+    </div>
+</div>
+
+<!-- CABECERA PRINCIPAL -->
+<header id="inicio">
+    <div class="logo-container">
+        <img src="SolarisGG Logo.png" alt="SolarisGG Network Logo" class="server-logo">
+    </div>
+    <h1 class="titulo-principal">SOLARIS<span>GG</span></h1>
+
+    <div class="platform-badges">
+        <div class="badge"><i class="fa-solid fa-desktop"></i> Java Edition</div>
+        <div class="badge"><i class="fa-solid fa-mobile-screen-button"></i> Bedrock Edition</div>
+    </div>
+
+    <div class="motd-container">
+        <span id="motdText">Consultando el MOTD del servidor...</span>
+    </div>
+
+    <div class="status-box">
+        <!-- Botones de IP -->
+        <div class="connection-grid">
+            <button class="btn-ip" id="btnJava" onclick="copiarIP('mc.solarisgg.opik.net', 'btnJava')">
+                <span class="ip-type"><i class="fa-solid fa-desktop"></i> JAVA IP</span>
+                <span>mc.solarisgg.opik.net</span>
             </button>
+            <button class="btn-ip" id="btnBedrock" onclick="copiarIP('mc.solarisgg.opik.net:19132', 'btnBedrock')">
+                <span class="ip-type"><i class="fa-solid fa-gamepad"></i> Bedrock Edition</span>
+                <span>mc.solarisgg.opik.net:19132</span>
+            </button>
+        </div>
 
-            <!-- Sección de Autenticación / Usuario -->
-            <div id="authGuest" class="auth-buttons">
-                <button class="btn-auth-login" onclick="abrirModal('login')"><i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión</button>
-                <button class="btn-auth-register" onclick="abrirModal('register')"><i class="fa-solid fa-user-plus"></i> Registrarse</button>
+        <!-- Grilla de Estado -->
+        <div class="status-grid">
+            <div class="stat-item">
+                <div class="stat-label">Versión</div>
+                <div class="stat-val" id="versionText">Cargando...</div>
             </div>
-
-            <div id="authUser" class="user-logged">
-                <i class="fa-solid fa-user" style="color: var(--naranja);"></i>
-                <span id="userNameDisplay">Usuario</span>
-                <button class="btn-logout" onclick="cerrarSesion()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
+            <div class="stat-item">
+                <div class="stat-label">Jugadores</div>
+                <div class="stat-val" id="playerCount">- / -</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Estado</div>
+                <div class="stat-val" id="statusText">Buscando...</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Tu Ping</div>
+                <div class="stat-val" id="pingText">-- ms</div>
             </div>
         </div>
-    </nav>
 
-    <!-- MODAL POPUP PARA LOGIN Y REGISTRO -->
-    <div class="modal-overlay" id="authModal">
-        <div class="modal-card">
-            <button class="btn-close-modal" onclick="cerrarModal('authModal')">&times;</button>
-
-            <!-- FORMULARIO LOGIN -->
-            <div id="formLogin">
-                <h3 class="modal-title">Iniciar <span style="color: var(--naranja);">Sesión</span></h3>
-                <form onsubmit="procesarLogin(event)">
-                    <div class="form-group">
-                        <label for="loginUser">Usuario de Minecraft</label>
-                        <input type="text" id="loginUser" class="form-input" style="padding-right:12px;" placeholder="TuUsuarioMC" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPass">Contraseña</label>
-                        <div class="password-container">
-                            <input type="password" id="loginPass" class="form-input" placeholder="••••••••" required>
-                            <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibilidadPassword('loginPass', this)"></i>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-submit-auth">Entrar</button>
-                </form>
-                <div class="auth-switch">
-                    ¿No tienes cuenta? <a onclick="cambiarModoModal('register')">Regístrate aquí</a>
-                </div>
-            </div>
-
-            <!-- FORMULARIO REGISTRO -->
-            <div id="formRegister" style="display: none;">
-                <h3 class="modal-title">Crear <span style="color: var(--naranja);">Cuenta</span></h3>
-                <form onsubmit="procesarRegistro(event)">
-                    <div class="form-group">
-                        <label for="regUser">Usuario de Minecraft</label>
-                        <input type="text" id="regUser" class="form-input" style="padding-right:12px;" placeholder="TuUsuarioMC" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="regEmail">Correo Electrónico</label>
-                        <input type="email" id="regEmail" class="form-input" style="padding-right:12px;" placeholder="correo@ejemplo.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="regPass">Contraseña</label>
-                        <div class="password-container">
-                            <input type="password" id="regPass" class="form-input" placeholder="••••••••" required>
-                            <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibilidadPassword('regPass', this)"></i>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-submit-auth">Registrarse</button>
-                </form>
-                <div class="auth-switch">
-                    ¿Ya tienes cuenta? <a onclick="cambiarModoModal('login')">Inicia sesión</a>
-                </div>
-            </div>
+        <div class="live-badge">
+            <div class="pulse-dot"></div>
+            <span><strong>INFORMACIÓN EN VIVO</strong></span>
         </div>
     </div>
+</header>
 
-    <!-- MODAL DEL CARRITO DE COMPRAS -->
-    <div class="modal-overlay" id="cartModal">
-        <div class="modal-card">
-            <button class="btn-close-modal" onclick="cerrarModal('cartModal')">&times;</button>
-            <h3 class="modal-title">Carrito de <span style="color: var(--naranja);">Compras</span></h3>
-            
-            <div class="cart-items-list" id="cartItemsContainer">
-                <!-- Contenido dinámico con scroll personalizado -->
+<!-- TIENDA -->
+<main class="container" id="tienda">
+    <h2 class="section-title">Tienda de <span>Rangos</span></h2>
+    
+    <div class="ranks-container">
+        <div class="rank-card rank-veterano">
+            <div>
+                <div class="rank-name">Veterano</div>
+                <div class="rank-price">1.99€</div>
+                <ul class="rank-features">
+                    <li><i class="fa-solid fa-check"></i> Prefijo [Veterano]</li>
+                    <li><i class="fa-solid fa-check"></i> 2 Hogares (/sethome)</li>
+                    <li><i class="fa-solid fa-check"></i> Acceso a /hat</li>
+                </ul>
             </div>
+            <button class="btn-buy" onclick="agregarAlCarrito('Rango Veterano', 1.99)">
+                <i class="fa-solid fa-cart-plus"></i> Añadir al Carrito
+            </button>
+        </div>
 
-            <div class="cart-summary">
-                <span>Total:</span>
-                <span style="color: var(--naranja);" id="cartTotal">0.00€</span>
+        <div class="rank-card rank-vip">
+            <div>
+                <div class="rank-name">VIP</div>
+                <div class="rank-price">3.99€</div>
+                <ul class="rank-features">
+                    <li><i class="fa-solid fa-check"></i> Prefijo [VIP]</li>
+                    <li><i class="fa-solid fa-check"></i> 4 Hogares (/sethome)</li>
+                    <li><i class="fa-solid fa-check"></i> Vuelo en Lobby (/fly)</li>
+                    <li><i class="fa-solid fa-check"></i> Kit VIP mensual</li>
+                </ul>
             </div>
+            <button class="btn-buy" onclick="agregarAlCarrito('Rango VIP', 3.99)">
+                <i class="fa-solid fa-cart-plus"></i> Añadir al Carrito
+            </button>
+        </div>
 
-            <button class="btn-submit-auth" style="margin-top:20px;" onclick="finalizarCompra()">Proceder al Pago</button>
+        <div class="rank-card rank-vip-plus">
+            <div>
+                <div class="rank-name">VIP+</div>
+                <div class="rank-price">6.99€</div>
+                <ul class="rank-features">
+                    <li><i class="fa-solid fa-check"></i> Prefijo [VIP+]</li>
+                    <li><i class="fa-solid fa-check"></i> 6 Hogares (/sethome)</li>
+                    <li><i class="fa-solid fa-check"></i> Comando /enderchest</li>
+                    <li><i class="fa-solid fa-check"></i> Prioridad en cola</li>
+                </ul>
+            </div>
+            <button class="btn-buy" onclick="agregarAlCarrito('Rango VIP+', 6.99)">
+                <i class="fa-solid fa-cart-plus"></i> Añadir al Carrito
+            </button>
+        </div>
+
+        <div class="rank-card rank-premium">
+            <div>
+                <div class="rank-name">Premium</div>
+                <div class="rank-price">9.99€</div>
+                <ul class="rank-features">
+                    <li><i class="fa-solid fa-check"></i> Prefijo [Premium]</li>
+                    <li><i class="fa-solid fa-check"></i> 10 Hogares (/sethome)</li>
+                    <li><i class="fa-solid fa-check"></i> Comando /craft</li>
+                    <li><i class="fa-solid fa-check"></i> Partículas exclusivas</li>
+                </ul>
+            </div>
+            <button class="btn-buy" onclick="agregarAlCarrito('Rango Premium', 9.99)">
+                <i class="fa-solid fa-cart-plus"></i> Añadir al Carrito
+            </button>
+        </div>
+
+        <div class="rank-card rank-leyenda">
+            <div>
+                <div class="rank-name">Leyenda</div>
+                <div class="rank-price">14.99€</div>
+                <ul class="rank-features">
+                    <li><i class="fa-solid fa-check"></i> Prefijo [Leyenda]</li>
+                    <li><i class="fa-solid fa-check"></i> Hogares ilimitados</li>
+                    <li><i class="fa-solid fa-check"></i> Comando /fly global</li>
+                    <li><i class="fa-solid fa-check"></i> Kit Leyenda exclusivo</li>
+                </ul>
+            </div>
+            <button class="btn-buy" onclick="agregarAlCarrito('Rango Leyenda', 14.99)">
+                <i class="fa-solid fa-cart-plus"></i> Añadir al Carrito
+            </button>
         </div>
     </div>
-
-    <!-- CABECERA PRINCIPAL -->
-    <header id="inicio">
-        <div class="logo-container">
-            <img src="SolarisGG Logo.png" alt="SolarisGG Network Logo" class="server-logo">
-        </div>
-        <h1 class="titulo-principal">SOLARIS<span>GG</span></h1>
-
-        <div class="platform-badges">
-            <div class="badge"><i class="fa-solid fa-desktop"></i> Java Edition</div>
-            <div class="badge"><i class="fa-solid fa-mobile-screen-button"></i> Bedrock Edition</div>
-        </div>
-
-        <div class="motd-container">
-            <span id="motdText">Consultando el MOTD del servidor...</span>
-        </div>
-
-        <div class="status-box">
-            <!-- Botones de IP -->
-            <div class="connection-grid">
-                <button class="btn-ip" id="btnJava" onclick="copiarIP('mc.solarisgg.opik.net', 'btnJava')">
-                    <span class="ip-type"><i class="fa-solid fa-desktop"></i> JAVA IP</span>
-                    <span>mc.solarisgg.opik.net</span>
-                </button>
-
-                <button class="btn-ip" id="btnBedrock" onclick="copiarIP('mc.solarisgg.opik.net:19132', 'btnBedrock')">
-                    <span class="ip-type"><i class="fa-solid fa-gamepad"></i> Bedrock Edition</span>
-                    <span>mc.solarisgg.opik.net / 19132</span>
-                </button>
-            </div>
-
-            <!-- Grilla de Estado -->
-            <div class="status-grid">
-                <div class="stat-item">
-                    <div class="stat-label">Versión</div>
-                    <div class="stat-val" id="versionText">1.7.2-26.2</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Jugadores</div>
-                    <div class="stat-val" id="playerCount">- / -</div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-label">Estado</div>
-                    <div class="stat-val" id="statusText">Cargando...</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Tu Ping</div>
-                    <div class="stat-val" id="pingText">-- ms</div>
-                </div>
-            </div>
-
-            <div class="live-badge">
-                <div class="pulse-dot"></div>
-                <span><strong>INFORMACIÓN EN VIVO</strong></span>
-            </div>
-        </div>
-    </header>
-
-    <!-- TIENDA -->
-    <main class="container" id="tienda">
-        <h2 class="section-title">Tienda de <span>Rangos</span></h2>
-
-        <div class="ranks-container">
-            <div class="rank-card rank-veterano">
-                <div>
-                    <div class="rank-name">Veterano</div>
-                    <div class="rank-price">1.99€</div>
-                    <ul class="rank-features">
-                        <li><i class="fa-solid fa-check"></i> Prefijo [Veterano]</li>
-                        <li><i class="fa-solid fa-check"></i> 2 Hogares (/sethome)</li>
-                        <li><i class="fa-solid fa-check"></i> Acceso a /hat</li>
-                    </ul>
-                </div>
-                <button class="btn-buy" onclick="agregarAlCarrito('Rango Veterano', 1.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
-            </div>
-
-            <div class="rank-card rank-vip">
-                <div>
-                    <div class="rank-name">VIP</div>
-                    <div class="rank-price">3.99€</div>
-                    <ul class="rank-features">
-                        <li><i class="fa-solid fa-check"></i> Prefijo [VIP]</li>
-                        <li><i class="fa-solid fa-check"></i> 4 Hogares (/sethome)</li>
-                        <li><i class="fa-solid fa-check"></i> Vuelo en Lobby (/fly)</li>
-                        <li><i class="fa-solid fa-check"></i> Kit VIP mensual</li>
-                    </ul>
-                </div>
-                <button class="btn-buy" onclick="agregarAlCarrito('Rango VIP', 3.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
-            </div>
-
-            <div class="rank-card rank-vip-plus">
-                <div>
-                    <div class="rank-name">VIP+</div>
-                    <div class="rank-price">6.99€</div>
-                    <ul class="rank-features">
-                        <li><i class="fa-solid fa-check"></i> Prefijo [VIP+]</li>
-                        <li><i class="fa-solid fa-check"></i> 6 Hogares (/sethome)</li>
-                        <li><i class="fa-solid fa-check"></i> Comando /enderchest</li>
-                        <li><i class="fa-solid fa-check"></i> Prioridad en cola</li>
-                    </ul>
-                </div>
-                <button class="btn-buy" onclick="agregarAlCarrito('Rango VIP+', 6.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
-            </div>
-
-            <div class="rank-card rank-premium">
-                <div>
-                    <div class="rank-name">Premium</div>
-                    <div class="rank-price">9.99€</div>
-                    <ul class="rank-features">
-                        <li><i class="fa-solid fa-check"></i> Prefijo [Premium]</li>
-                        <li><i class="fa-solid fa-check"></i> 10 Hogares (/sethome)</li>
-                        <li><i class="fa-solid fa-check"></i> Comando /craft</li>
-                        <li><i class="fa-solid fa-check"></i> Partículas exclusivas</li>
-                    </ul>
-                </div>
-                <button class="btn-buy" onclick="agregarAlCarrito('Rango Premium', 9.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
-            </div>
-
-            <div class="rank-card rank-leyenda">
-                <div>
-                    <div class="rank-name">Leyenda</div>
-                    <div class="rank-price">14.99€</div>
-                    <ul class="rank-features">
-                        <li><i class="fa-solid fa-check"></i> Prefijo [Leyenda]</li>
-                        <li><i class="fa-solid fa-check"></i> Hogares ilimitados</li>
-                        <li><i class="fa-solid fa-check"></i> Comando /fly global</li>
-                        <li><i class="fa-solid fa-check"></i> Kit Leyenda exclusivo</li>
-                    </ul>
-                </div>
-                <button class="btn-buy" onclick="agregarAlCarrito('Rango Leyenda', 14.99)"><i class="fa-solid fa-cart-plus"></i> Añadir al Carrito</button>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2026 SolarisGG Network. No afiliado oficialmente con Mojang o Microsoft.</p>
-    </footer>
-
-    <script>
-        const IP_SERVIDOR = "mc.solarisgg.opik.net";
-        let carrito = JSON.parse(localStorage.getItem("solaris_cart") || "[]");
-
-        /* CONTADOR DINÁMICO DE PERSONAS EN LA WEB EN VIVO */
-        let webUsers = Math.floor(Math.random() * 8) + 10; // Valor inicial realista (entre 10 y 17)
-        document.getElementById("webUsersCount").innerText = webUsers;
-
-        setInterval(() => {
-            // Varía levemente la cantidad de personas
-            const variacion = Math.floor(Math.random() * 3) - 1; // -1, 0, o +1
-            webUsers = Math.max(5, webUsers + variacion);
-            document.getElementById("webUsersCount").innerText = webUsers;
-        }, 4000);
-
-        /* SISTEMA DE NOTIFICACIONES PERSONALIZADO (TOASTS) */
-        function mostrarNotificacion(mensaje, tipo = "info") {
-            const container = document.getElementById("toastContainer");
-            const toast = document.createElement("div");
-            
-            let icono = "fa-info-circle";
-            if (tipo === "success") icono = "fa-circle-check";
-            if (tipo === "error") icono = "fa-circle-exclamation";
-
-            toast.className = `toast ${tipo}`;
-            toast.innerHTML = `
-                <i class="fa-solid ${icono}"></i>
-                <span>${mensaje}</span>
-            `;
-
-            container.appendChild(toast);
-
-            setTimeout(() => toast.classList.add("show"), 10);
-
-            setTimeout(() => {
-                toast.classList.remove("show");
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        /* MOSTRAR / OCULTAR CONTRASEÑA */
-        function toggleVisibilidadPassword(inputId, icon) {
-            const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-        }
-
-        /* LÓGICA DEL CARRITO DE COMPRAS - SOLO 1 RANGO A LA VEZ */
-        function agregarAlCarrito(nombre, precio) {
-            if (carrito.length > 0) {
-                // Se reemplaza el rango existente asegurando 1 solo a la vez
-                carrito = [{ nombre, precio }];
-                actualizarCarrito();
-                mostrarNotificacion(`Has cambiado tu carrito por: ${nombre}`, "info");
-            } else {
-                carrito.push({ nombre, precio });
-                actualizarCarrito();
-                mostrarNotificacion(`¡${nombre} añadido al carrito!`, "success");
-            }
-        }
-
-        function eliminarDelCarrito(index) {
-            const itemEliminado = carrito[index].nombre;
-            carrito.splice(index, 1);
-            actualizarCarrito();
-            renderizarCarritoModal();
-            mostrarNotificacion(`Se ha eliminado ${itemEliminado} del carrito.`, "info");
-        }
-
-        function actualizarCarrito() {
-            localStorage.setItem("solaris_cart", JSON.stringify(carrito));
-            document.getElementById("cartCount").innerText = carrito.length;
-        }
-
-        function abrirModalCarrito() {
-            renderizarCarritoModal();
-            document.getElementById("cartModal").style.display = "flex";
-        }
-
-        function renderizarCarritoModal() {
-            const container = document.getElementById("cartItemsContainer");
-            const totalEl = document.getElementById("cartTotal");
-
-            if (carrito.length === 0) {
-                container.innerHTML = '<div class="empty-cart-msg">Tu carrito está vacío.</div>';
-                totalEl.innerText = "0.00€";
-                return;
-            }
-
-            container.innerHTML = "";
-            let total = 0;
-
-            carrito.forEach((item, index) => {
-                total += item.precio;
-                const div = document.createElement("div");
-                div.className = "cart-item";
-                div.innerHTML = `
-                    <div class="cart-item-info">
-                        <span class="cart-item-title">${item.nombre}</span>
-                        <span class="cart-item-price">${item.precio.toFixed(2)}€</span>
-                    </div>
-                    <button class="btn-remove-item" onclick="eliminarDelCarrito(${index})" title="Eliminar item">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                `;
-                container.appendChild(div);
-            });
-
-            totalEl.innerText = `${total.toFixed(2)}€`;
-        }
-
-        function finalizarCompra() {
-            const usuarioActivo = localStorage.getItem("solaris_session");
-            if (carrito.length === 0) {
-                mostrarNotificacion("Tu carrito está vacío.", "error");
-                return;
-            }
-
-            if (!usuarioActivo) {
-                mostrarNotificacion("Debes iniciar sesión para realizar la compra.", "error");
-                cerrarModal("cartModal");
-                abrirModal("login");
-                return;
-            }
-
-            mostrarNotificacion(`¡Gracias ${usuarioActivo}! Redirigiendo a la pasarela de pago...`, "success");
-            carrito = [];
-            actualizarCarrito();
-            cerrarModal("cartModal");
-        }
-
-        /* LÓGICA DE ESTADO DEL SERVIDOR */
-        async function mediping() {
-            const pingEl = document.getElementById("pingText");
-            const inicio = Date.now();
-            try {
-                await fetch(`https://api.mcsrvstat.us/3/${IP_SERVIDOR}`, { cache: "no-store", method: "HEAD" });
-                const latencia = Date.now() - inicio;
-                pingEl.innerText = `${latencia} ms`;
-                if (latencia < 100) pingEl.style.color = "#22c55e";
-                else if (latencia < 200) pingEl.style.color = "#f59e0b";
-                else pingEl.style.color = "#ef4444";
-            } catch (e) {
-                pingEl.innerText = "Error";
-            }
-        }
-
-        async function actualizarEstado() {
-            const statusEl = document.getElementById("statusText");
-            const countEl = document.getElementById("playerCount");
-            const versionEl = document.getElementById("versionText");
-            const motdEl = document.getElementById("motdText");
-            const pingEl = document.getElementById("pingText");
-
-            versionEl.innerText = "1.7.2-26.2";
-
-            try {
-                const res = await fetch(`https://api.mcsrvstat.us/3/${IP_SERVIDOR}`);
-                const data = await res.json();
-
-                if (data.online) {
-                    statusEl.innerHTML = '<span style="color: #22c55e;">Encendido 🟢</span>';
-                    countEl.innerText = `${data.players.online} / ${data.players.max}`;
-
-                    if (data.motd && data.motd.clean && data.motd.clean.length > 0) {
-                        motdEl.innerText = data.motd.clean.join(" ");
-                    } else {
-                        motdEl.innerText = "¡Bienvenido al servidor oficial de SolarisGG Network!";
-                    }
-
-                    mediping();
-
-                } else {
-                    statusEl.innerHTML = '<span style="color: #ef4444;">Apagado 🔴</span>';
-                    countEl.innerText = "0 / 1500";
-                    motdEl.innerText = "El servidor se encuentra actualmente en mantenimiento o apagado.";
-                    pingEl.innerText = "-- ms";
-                    pingEl.style.color = "var(--blanco)";
-                }
-            } catch (error) {
-                statusEl.innerHTML = '<span style="color: #f59e0b;">Error ⚠️</span>';
-                countEl.innerText = "0 / 1500";
-                motdEl.innerText = "No se pudo obtener información del servidor.";
-                pingEl.innerText = "-- ms";
-                pingEl.style.color = "var(--blanco)";
-            }
-        }
-
-        function copiarIP(texto, elementId) {
-            navigator.clipboard.writeText(texto);
-            const btn = document.getElementById(elementId);
-            const originalHTML = btn.innerHTML;
-
-            btn.innerHTML = `<span class="ip-type"><i class="fa-solid fa-check"></i> ¡Copiado!</span><span>${texto}</span>`;
-            btn.style.backgroundColor = "#22c55e";
-            btn.style.borderColor = "#22c55e";
-
-            mostrarNotificacion(`IP copiada al portapapeles: ${texto}`, "success");
-
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.style.backgroundColor = "var(--negro-fondo)";
-                btn.style.borderColor = "var(--naranja)";
-            }, 2500);
-        }
-
-        /* LÓGICA DE AUTENTICACIÓN (LOGIN & REGISTER) */
-        function abrirModal(modo) {
-            cambiarModoModal(modo);
-            document.getElementById("authModal").style.display = "flex";
-        }
-
-        function cerrarModal(idModal) {
-            document.getElementById(idModal).style.display = "none";
-        }
-
-        function cambiarModoModal(modo) {
-            if (modo === 'login') {
-                document.getElementById("formLogin").style.display = "block";
-                document.getElementById("formRegister").style.display = "none";
-            } else {
-                document.getElementById("formLogin").style.display = "none";
-                document.getElementById("formRegister").style.display = "block";
-            }
-        }
-
-        function procesarRegistro(e) {
-            e.preventDefault();
-            const user = document.getElementById("regUser").value.trim();
-            const email = document.getElementById("regEmail").value.trim();
-            const pass = document.getElementById("regPass").value;
-
-            let usuarios = JSON.parse(localStorage.getItem("solaris_users") || "{}");
-
-            if (usuarios[user]) {
-                mostrarNotificacion("El nombre de usuario ya está registrado.", "error");
-                return;
-            }
-
-            usuarios[user] = { email, pass };
-            localStorage.setItem("solaris_users", JSON.stringify(usuarios));
-            localStorage.setItem("solaris_session", user);
-
-            mostrarNotificacion("¡Registro completado con éxito!", "success");
-            cerrarModal("authModal");
-            verificarSesion();
-        }
-
-        function procesarLogin(e) {
-            e.preventDefault();
-            const user = document.getElementById("loginUser").value.trim();
-            const pass = document.getElementById("loginPass").value;
-
-            let usuarios = JSON.parse(localStorage.getItem("solaris_users") || "{}");
-
-            if (usuarios[user] && usuarios[user].pass === pass) {
-                localStorage.setItem("solaris_session", user);
-                mostrarNotificacion(`¡Bienvenido de nuevo, ${user}!`, "success");
-                cerrarModal("authModal");
-                verificarSesion();
-            } else {
-                mostrarNotificacion("Usuario o contraseña incorrectos.", "error");
-            }
-        }
-
-        function cerrarSesion() {
-            localStorage.removeItem("solaris_session");
-            mostrarNotificacion("Has cerrado sesión.", "info");
-            verificarSesion();
-        }
-
-        function verificarSesion() {
-            const usuarioActivo = localStorage.getItem("solaris_session");
-            const authGuest = document.getElementById("authGuest");
-            const authUser = document.getElementById("authUser");
-            const userNameDisplay = document.getElementById("userNameDisplay");
-
-            if (usuarioActivo) {
-                authGuest.style.display = "none";
-                authUser.style.display = "flex";
-                userNameDisplay.innerText = usuarioActivo;
-            } else {
-                authGuest.style.display = "flex";
-                authUser.style.display = "none";
-            }
-        }
-
-        window.onclick = function(event) {
-            const authModal = document.getElementById("authModal");
-            const cartModal = document.getElementById("cartModal");
-            if (event.target === authModal) cerrarModal("authModal");
-            if (event.target === cartModal) cerrarModal("cartModal");
-        };
-
-        // Inicializar
+</main>
+
+<footer> 
+    <p>&copy; 2026 SolarisGG Network. No afiliado oficialmente con Mojang o Microsoft.</p>
+</footer>
+
+<script>
+const IP_SERVIDOR = "mc.solarisgg.opik.net";
+let carrito = JSON.parse(localStorage.getItem("solaris_cart") || "[]");
+
+/* MENÚ MÓVIL */
+function toggleMenu() {
+    const nav = document.getElementById('navContainer');
+    const icon = document.querySelector('#menuToggle i');
+    nav.classList.toggle('active');
+    
+    if (nav.classList.contains('active')) {
+        icon.classList.replace('fa-bars', 'fa-xmark');
+    } else {
+        icon.classList.replace('fa-xmark', 'fa-bars');
+    }
+}
+
+function closeMenu() {
+    const nav = document.getElementById('navContainer');
+    const icon = document.querySelector('#menuToggle i');
+    if (nav && nav.classList.contains('active')) {
+        nav.classList.remove('active');
+        icon.classList.replace('fa-xmark', 'fa-bars');
+    }
+}
+
+/* NOTIFICACIONES TOAST */
+function mostrarNotificacion(mensaje, tipo = "info") {
+    const container = document.getElementById("toastContainer");
+    const toast = document.createElement("div");
+    let icono = "fa-info-circle";
+    
+    if (tipo === "success") icono = "fa-circle-check";
+    if (tipo === "error") icono = "fa-circle-exclamation";
+    
+    toast.className = `toast ${tipo}`;
+    toast.innerHTML = `
+        <i class="fa-solid ${icono}"></i>
+        <span>${mensaje}</span>
+    `;
+    container.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add("show"), 10);
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+
+/* MOSTRAR / OCULTAR CONTRASEÑA */
+function toggleVisibilidadPassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+
+/* CARRITO DE COMPRAS */
+function agregarAlCarrito(nombre, precio) {
+    if (carrito.length > 0) { 
+        carrito = [{ nombre, precio }];
         actualizarCarrito();
+        mostrarNotificacion(`Has reemplazado tu carrito por: ${nombre}`, "info");
+    } else {
+        carrito.push({ nombre, precio });
+        actualizarCarrito();
+        mostrarNotificacion(`¡${nombre} añadido al carrito!`, "success");
+    }
+}
+
+function eliminarDelCarrito(index) {
+    const itemEliminado = carrito[index].nombre;
+    carrito.splice(index, 1);
+    actualizarCarrito();
+    renderizarCarritoModal();
+    mostrarNotificacion(`Se ha eliminado ${itemEliminado} del carrito.`, "info");
+}
+
+function actualizarCarrito() {
+    localStorage.setItem("solaris_cart", JSON.stringify(carrito));
+    document.getElementById("cartCount").innerText = carrito.length;
+}
+
+function abrirModalCarrito() {
+    closeMenu();
+    renderizarCarritoModal();
+    document.getElementById("cartModal").style.display = "flex";
+}
+
+function renderizarCarritoModal() {
+    const container = document.getElementById("cartItemsContainer");
+    const totalEl = document.getElementById("cartTotal");
+    
+    if (carrito.length === 0) {
+        container.innerHTML = '<div class="empty-cart-msg">Tu carrito está vacío.</div>';
+        totalEl.innerText = "0.00€";
+        return;
+    }
+    
+    container.innerHTML = "";
+    let total = 0;
+    carrito.forEach((item, index) => {
+        total += item.precio;
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+            <div class="cart-item-info">
+                <span class="cart-item-title">${item.nombre}</span>
+                <span class="cart-item-price">${item.precio.toFixed(2)}€</span>
+            </div>
+            <button class="btn-remove-item" onclick="eliminarDelCarrito(${index})" title="Eliminar item">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        `;
+        container.appendChild(div);
+    });
+    totalEl.innerText = `${total.toFixed(2)}€`;
+}
+
+function finalizarCompra() {
+    const usuarioActivo = localStorage.getItem("solaris_session");
+    if (carrito.length === 0) {
+        mostrarNotificacion("Tu carrito está vacío.", "error");
+        return;
+    }
+    if (!usuarioActivo) {
+        mostrarNotificacion("Debes iniciar sesión para realizar la compra.", "error");
+        cerrarModal("cartModal");
+        abrirModal("login");
+        return;
+    }
+    mostrarNotificacion(`¡Gracias ${usuarioActivo}! Redirigiendo a la pasarela de pago...`, "success");
+    carrito = [];
+    actualizarCarrito();
+    cerrarModal("cartModal");
+}
+
+/* MEDIR LATENCIA PING */
+async function mediping() {
+    const pingEl = document.getElementById("pingText");
+    const inicio = Date.now();
+    try {
+        await fetch(`https://api.mcsrvstat.us/3/${IP_SERVIDOR}`, { cache: "no-store", method: "HEAD" });
+        const latencia = Date.now() - inicio;
+        pingEl.innerText = `${latencia} ms`;
+        if (latencia < 100) pingEl.style.color = "#22c55e";
+        else if (latencia < 200) pingEl.style.color = "#f59e0b";
+        else pingEl.style.color = "#ef4444";
+    } catch (e) {
+        pingEl.innerText = "-- ms";
+        pingEl.style.color = "var(--blanco)";
+    }
+}
+
+/* LÓGICA DE DETECCIÓN DE ESTADO DEL SERVIDOR */
+async function actualizarEstado() {
+    const statusEl = document.getElementById("statusText");
+    const countEl = document.getElementById("playerCount");
+    const versionEl = document.getElementById("versionText");
+    const motdEl = document.getElementById("motdText");
+
+    // Intento 1: API mcsrvstat.us
+    try {
+        const res = await fetch(`https://api.mcsrvstat.us/3/${IP_SERVIDOR}?t=${Date.now()}`);
+        const data = await res.json();
+        if (data.online) {
+            statusEl.innerHTML = '<span style="color: #22c55e;">Encendido 🟢</span>';
+            countEl.innerText = `${data.players ? data.players.online : 0} / ${data.players ? data.players.max : 0}`;
+            versionEl.innerText = data.version || "1.7.2 - 1.20.x";
+            if (data.motd && data.motd.clean && data.motd.clean.length > 0) {
+                motdEl.innerText = data.motd.clean.join(" ");
+            } else {
+                motdEl.innerText = "¡Bienvenido al servidor oficial de SolarisGG Network!";
+            }
+            mediping();
+            return;
+        }
+    } catch (e) {
+        console.warn("Intento 1 falló, probando servidor de respaldo...");
+    }
+
+    // Intento 2: Respaldo mcstatus.io
+    try {
+        const res2 = await fetch(`https://api.mcstatus.io/v2/status/java/${IP_SERVIDOR}`);
+        const data2 = await res2.json();
+        if (data2.online) {
+            statusEl.innerHTML = '<span style="color: #22c55e;">Encendido</span>';
+            countEl.innerText = `${data2.players.online} / ${data2.players.max}`;
+            versionEl.innerText = data2.version ? data2.version.name_clean : "1.7.2 - 1.20.x";
+            if (data2.motd && data2.motd.clean) {
+                motdEl.innerText = data2.motd.clean;
+            } else {
+                motdEl.innerText = "¡Bienvenido al servidor oficial de SolarisGG Network!";
+            }
+            mediping();
+            return;
+        }
+    } catch (e) {
+        console.warn("Intento 2 falló.");
+    }
+
+    // Si ambos fallan o el servidor realmente está caído
+    statusEl.innerHTML = '<span style="color: #ef4444;">Apagado 🔴</span>';
+    countEl.innerText = "0 / 1500";
+    versionEl.innerText = "1.7.2-26.2";
+    motdEl.innerText = "El servidor se encuentra apagado o no se puede establecer conexión.";
+    document.getElementById("pingText").innerText = "-- ms";
+}
+
+function copiarIP(texto, elementId) {
+    navigator.clipboard.writeText(texto);
+    const btn = document.getElementById(elementId);
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = `<span class="ip-type"><i class="fa-solid fa-check"></i> ¡Copiado!</span><span>${texto}</span>`;
+    btn.style.backgroundColor = "#22c55e";
+    btn.style.borderColor = "#22c55e";
+    mostrarNotificacion(`IP copiada al portapapeles: ${texto}`, "success");
+    setTimeout(() => {
+        btn.innerHTML = originalHTML;
+        btn.style.backgroundColor = "var(--negro-fondo)";
+        btn.style.borderColor = "var(--naranja)";
+    }, 2500);
+}
+
+/* LOGIN / REGISTRO */
+function abrirModal(modo) {
+    closeMenu();
+    cambiarModoModal(modo);
+    document.getElementById("authModal").style.display = "flex";
+}
+
+function cerrarModal(idModal) {
+    document.getElementById(idModal).style.display = "none";
+}
+
+function cambiarModoModal(modo) {
+    if (modo === 'login') {
+        document.getElementById("formLogin").style.display = "block";
+        document.getElementById("formRegister").style.display = "none";
+    } else {
+        document.getElementById("formLogin").style.display = "none";
+        document.getElementById("formRegister").style.display = "block";
+    }
+}
+
+function procesarRegistro(e) {
+    e.preventDefault();
+    const user = document.getElementById("regUser").value.trim();
+    const email = document.getElementById("regEmail").value.trim();
+    const pass = document.getElementById("regPass").value;
+    let usuarios = JSON.parse(localStorage.getItem("solaris_users") || "{}");
+
+    if (usuarios[user]) {
+        mostrarNotificacion("El nombre de usuario ya está registrado.", "error");
+        return;
+    }
+
+    usuarios[user] = { email, pass };
+    localStorage.setItem("solaris_users", JSON.stringify(usuarios));
+    localStorage.setItem("solaris_session", user);
+    mostrarNotificacion("¡Registro completado con éxito!", "success");
+    cerrarModal("authModal");
+    verificarSesion();
+}
+
+function procesarLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById("loginUser").value.trim();
+    const pass = document.getElementById("loginPass").value;
+    let usuarios = JSON.parse(localStorage.getItem("solaris_users") || "{}");
+
+    if (usuarios[user] && usuarios[user].pass === pass) {
+        localStorage.setItem("solaris_session", user);
+        mostrarNotificacion(`¡Bienvenido de nuevo, ${user}!`, "success");
+        cerrarModal("authModal");
         verificarSesion();
-        actualizarEstado();
-        setInterval(actualizarEstado, 5000);
-    </script>
+    } else {
+        mostrarNotificacion("Usuario o contraseña incorrectos.", "error");
+    }
+}
+
+function cerrarSesion() {
+    localStorage.removeItem("solaris_session");
+    mostrarNotificacion("Has cerrado sesión.", "info");
+    verificarSesion();
+}
+
+function verificarSesion() {
+    const usuarioActivo = localStorage.getItem("solaris_session");
+    const authGuest = document.getElementById("authGuest");
+    const authUser = document.getElementById("authUser");
+    const userNameDisplay = document.getElementById("userNameDisplay");
+
+    if (usuarioActivo) {
+        authGuest.style.display = "none";
+        authUser.style.display = "flex";
+        userNameDisplay.innerText = usuarioActivo;
+    } else {
+        authGuest.style.display = "flex";
+        authUser.style.display = "none";
+    }
+}
+
+window.onclick = function(event) {
+    const authModal = document.getElementById("authModal");
+    const cartModal = document.getElementById("cartModal");
+    if (event.target === authModal) cerrarModal("authModal");
+    if (event.target === cartModal) cerrarModal("cartModal");
+};
+
+// Inicializar
+actualizarCarrito();
+verificarSesion();
+actualizarEstado();
+setInterval(actualizarEstado, 10000);
+</script>
 </body>
 </html>
