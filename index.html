@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolarisGG Network - Servidor Oficial</title>
+    <title>SolarisGG Network - Servidor Java & Bedrock</title>
+
+    <!-- Favicon con tu logo -->
+    <link rel="icon" type="image/png" href="SolarisGG Logo.png">
+
     <!-- FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
             --naranja: #ff6b00;
-            --naranja-brillo: rgba(255, 107, 0, 0.35);
+            --naranja-brillo: rgba(255, 107, 0, 0.4);
             --blanco: #ffffff;
             --gris-claro: #f3f4f6;
-            --gris-texto: #9ca3af;
-            --gris-tarjeta: #16181e;
-            --gris-borde: #262933;
+            --gris-texto: #a1a1aa;
+            --gris-tarjeta: #14161d;
+            --gris-borde: #272a36;
             --negro-fondo: #0a0b0e;
-            --negro-solido: #000000;
+            --negro-solido: #030405;
         }
 
         * {
@@ -33,7 +38,8 @@
             display: flex;
             flex-direction: column;
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(255, 107, 0, 0.12) 0%, transparent 60%);
+                radial-gradient(circle at 50% 0%, rgba(255, 107, 0, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 90%, rgba(255, 107, 0, 0.05) 0%, transparent 50%);
         }
 
         /* Navegación */
@@ -42,8 +48,9 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 8%;
-            background-color: var(--negro-solido);
-            border-bottom: 2px solid var(--gris-borde);
+            background-color: rgba(3, 4, 5, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gris-borde);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -57,8 +64,8 @@
         }
 
         .nav-logo-img {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             object-fit: contain;
         }
 
@@ -86,27 +93,32 @@
 
         .nav-links a:hover { color: var(--naranja); }
 
-        /* Cabecera / Principal */
+        /* Cabecera Principal */
         header {
             text-align: center;
             padding: 50px 20px 30px;
         }
 
+        .logo-container {
+            position: relative;
+            display: inline-block;
+        }
+
         .server-logo {
-            width: 130px;
-            height: 130px;
+            width: 140px;
+            height: 140px;
             object-fit: contain;
-            filter: drop-shadow(0 0 20px var(--naranja-brillo));
+            filter: drop-shadow(0 0 25px var(--naranja-brillo));
             margin-bottom: 15px;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .server-logo:hover {
-            transform: scale(1.05);
+            transform: scale(1.08) rotate(2deg);
         }
 
         .titulo-principal {
-            font-size: 3.2rem;
+            font-size: 3.5rem;
             font-weight: 900;
             color: var(--blanco);
             letter-spacing: 1px;
@@ -114,42 +126,65 @@
 
         .titulo-principal span { color: var(--naranja); }
 
+        /* Badges Java & Bedrock */
+        .platform-badges {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 15px 0 20px;
+        }
+
+        .badge {
+            background-color: var(--gris-tarjeta);
+            border: 1px solid var(--gris-borde);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--gris-claro);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge i { color: var(--naranja); }
+
         /* MOTD Box */
         .motd-container {
             background: var(--gris-tarjeta);
             border: 1px solid var(--gris-borde);
             border-left: 4px solid var(--naranja);
             padding: 15px 20px;
-            border-radius: 8px;
-            max-width: 600px;
-            margin: 20px auto 30px;
+            border-radius: 10px;
+            max-width: 650px;
+            margin: 0 auto 30px;
             color: var(--gris-claro);
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 0.98rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
 
-        /* Status Box */
+        /* Box de Estado y Conexión */
         .status-box {
             background-color: var(--gris-tarjeta);
             border: 1px solid var(--gris-borde);
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6);
         }
 
         .status-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .stat-item {
             background: var(--negro-fondo);
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid var(--gris-borde);
         }
 
@@ -167,38 +202,53 @@
             color: var(--blanco);
         }
 
-        /* Botón de IP */
+        /* Panel de Copia IP Doble (Java y Bedrock) */
+        .connection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
         .btn-ip {
-            width: 100%;
-            background-color: var(--naranja);
+            background-color: var(--negro-fondo);
+            border: 1px solid var(--naranja);
             color: var(--blanco);
-            border: none;
-            padding: 15px;
-            font-size: 1.05rem;
-            font-weight: 800;
-            border-radius: 8px;
+            padding: 14px 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px var(--naranja-brillo);
+            gap: 4px;
         }
 
         .btn-ip:hover {
-            background-color: #e05e00;
+            background-color: var(--naranja);
+            box-shadow: 0 4px 20px var(--naranja-brillo);
             transform: translateY(-2px);
         }
 
-        /* Actualizador en vivo badge */
+        .btn-ip span.ip-type {
+            font-size: 0.75rem;
+            color: var(--gris-texto);
+            text-transform: uppercase;
+        }
+
+        .btn-ip:hover span.ip-type {
+            color: var(--blanco);
+        }
+
+        /* Live Badge */
         .live-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-size: 0.8rem;
             color: var(--gris-texto);
-            margin-top: 15px;
+            margin-top: 18px;
         }
 
         .pulse-dot {
@@ -215,9 +265,9 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
         }
 
-        /* Secciones de contenido */
+        /* Secciones principales */
         .container {
-            max-width: 1000px;
+            max-width: 1050px;
             margin: 50px auto;
             padding: 0 20px;
             display: grid;
@@ -229,16 +279,21 @@
             background: var(--gris-tarjeta);
             border: 1px solid var(--gris-borde);
             padding: 25px;
-            border-radius: 10px;
+            border-radius: 12px;
+            transition: border-color 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--naranja);
         }
 
         .card h3 {
             color: var(--naranja);
             font-size: 1.25rem;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .card p, .card ul {
@@ -253,10 +308,15 @@
             margin-top: auto;
             background-color: var(--negro-solido);
             border-top: 1px solid var(--gris-borde);
-            padding: 20px;
+            padding: 25px 20px;
             text-align: center;
             color: var(--gris-texto);
             font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            .connection-grid { grid-template-columns: 1fr; }
+            .titulo-principal { font-size: 2.6rem; }
         }
     </style>
 </head>
@@ -275,9 +335,16 @@
     </nav>
 
     <header id="inicio">
-        <!-- Logo principal con la ruta a tu archivo PNG -->
-        <img src="SolarisGG Logo.png" alt="SolarisGG Network Logo" class="server-logo">
+        <div class="logo-container">
+            <img src="SolarisGG Logo.png" alt="SolarisGG Network Logo" class="server-logo">
+        </div>
         <h1 class="titulo-principal">SOLARIS<span>GG</span></h1>
+
+        <!-- Etiquetas de compatibilidad -->
+        <div class="platform-badges">
+            <div class="badge"><i class="fa-solid fa-desktop"></i> Java Edition</div>
+            <div class="badge"><i class="fa-solid fa-mobile-screen-button"></i> Bedrock Edition</div>
+        </div>
 
         <!-- Muestra del MOTD -->
         <div class="motd-container">
@@ -301,14 +368,22 @@
                 </div>
             </div>
 
-            <button class="btn-ip" id="btnCopy" onclick="copiarIP()">
-                <i class="fa-regular fa-copy"></i>
-                <span>mc.solarisgg.xubi.org</span>
-            </button>
+            <!-- Botones independientes para Java y Bedrock -->
+            <div class="connection-grid">
+                <button class="btn-ip" id="btnJava" onclick="copiarIP('mc.solarisgg.xubi.org', 'btnJava', 'Java')">
+                    <span class="ip-type"><i class="fa-solid fa-desktop"></i> JAVA IP</span>
+                    <span>mc.solarisgg.xubi.org</span>
+                </button>
+
+                <button class="btn-ip" id="btnBedrock" onclick="copiarIP('mc.solarisgg.xubi.org:19132', 'btnBedrock', 'Bedrock')">
+                    <span class="ip-type"><i class="fa-solid fa-gamepad"></i> Bedrock IP & Puerto</span>
+                    <span>mc.solarisgg.xubi.org / 19132</span>
+                </button>
+            </div>
 
             <div class="live-badge">
                 <div class="pulse-dot"></div>
-                <span>Actualizando estado en tiempo real (cada 15s)</span>
+                <span><strong>INFORMACIÓN EN VIVO</strong></span>
             </div>
         </div>
     </header>
@@ -316,21 +391,21 @@
     <main class="container" id="info">
         <div class="card">
             <h3><i class="fa-solid fa-fire"></i> Modalidad Survival</h3>
-            <p>Disfruta de una experiencia Survival personalizada en SolarisGG, protecciones sencillas, misiones, economía nivelada y eventos de la comunidad.</p>
+            <p>Disfruta de una experiencia Survival personalizada en SolarisGG, con protecciones fáciles de usar, misiones, economía activa y juego cruzado entre Java y Bedrock.</p>
         </div>
 
         <div class="card">
-            <h3><i class="fa-solid fa-shield"></i> Reglas Clave</h3>
+            <h3><i class="fa-solid fa-shield-halved"></i> Reglas Clave</h3>
             <ul>
                 <li>Respeto mutuo en el chat global.</li>
-                <li>Prohibido el uso de hacks o clientes ilegales.</li>
-                <li>Prohibido el grfeo o uso de exploits.</li>
+                <li>Prohibido el uso de hacks, X-Ray o mods ilegales.</li>
+                <li>Prohibido el grfeo y aprovecharse de bugs.</li>
             </ul>
         </div>
 
         <div class="card" id="tienda">
             <h3><i class="fa-solid fa-cart-shopping"></i> Tienda Oficial</h3>
-            <p>Adquiere rangos VIP, llaves de cajas y mejoras para apoyar el mantenimiento 24/7 de la red.</p>
+            <p>Adquiere rangos VIP, llaves de cajas y ventajas cosméticas para apoyar el desarrollo y mantenimiento 24/7 de la red.</p>
         </div>
     </main>
 
@@ -352,9 +427,9 @@
                 const motdEl = document.getElementById("motdText");
 
                 if (data.online) {
-                    statusEl.innerHTML = '<span style="color: #22c55e;">En línea 🟢</span>';
+                    statusEl.innerHTML = '<span style="color: #22c55e;">Encendido 🟢</span>';
                     countEl.innerText = `${data.players.online} / ${data.players.max}`;
-                    versionEl.innerText = data.version ? data.version.replace(/Minecraft /i, '') : "Java";
+                    versionEl.innerText = data.version ? data.version.replace(/Minecraft /i, '') : "1.16 - 1.20+";
 
                     if (data.motd && data.motd.clean && data.motd.clean.length > 0) {
                         motdEl.innerText = data.motd.clean.join(" ");
@@ -362,9 +437,9 @@
                         motdEl.innerText = "¡Bienvenido al servidor oficial de SolarisGG Network!";
                     }
                 } else {
-                    statusEl.innerHTML = '<span style="color: #ef4444;">Offline 🔴</span>';
-                    countEl.innerText = "0 / 0";
-                    versionEl.innerText = "Offline";
+                    statusEl.innerHTML = '<span style="color: #ef4444;">Apagado 🔴</span>';
+                    countEl.innerText = "0 / 1500";
+                    versionEl.innerText = "1.7.2-26.2";
                     motdEl.innerText = "El servidor se encuentra actualmente en mantenimiento o apagado.";
                 }
             } catch (error) {
@@ -373,16 +448,19 @@
             }
         }
 
-        function copiarIP() {
-            navigator.clipboard.writeText(IP_SERVIDOR);
-            const btn = document.getElementById("btnCopy");
-            
-            btn.innerHTML = `<i class="fa-solid fa-check"></i> <span>¡IP Copiada al portapapeles!</span>`;
+        function copiarIP(texto, elementId, tipo) {
+            navigator.clipboard.writeText(texto);
+            const btn = document.getElementById(elementId);
+            const originalHTML = btn.innerHTML;
+
+            btn.innerHTML = `<span class="ip-type"><i class="fa-solid fa-check"></i> ¡Copiado!</span><span>${texto}</span>`;
             btn.style.backgroundColor = "#22c55e";
+            btn.style.borderColor = "#22c55e";
 
             setTimeout(() => {
-                btn.innerHTML = `<i class="fa-regular fa-copy"></i> <span>${IP_SERVIDOR}</span>`;
-                btn.style.backgroundColor = "var(--naranja)";
+                btn.innerHTML = originalHTML;
+                btn.style.backgroundColor = "var(--negro-fondo)";
+                btn.style.borderColor = "var(--naranja)";
             }, 2500);
         }
 
