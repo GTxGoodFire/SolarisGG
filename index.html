@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SolarisGG Network - Java & Bedrock</title>
 
-    <!-- Favicon con tu logo -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="SolarisGG Logo.png">
 
-    <!-- FontAwesome para los iconos -->
+    <!-- FontAwesome para los iconos sociales y de interfaz -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -42,13 +42,103 @@
                 radial-gradient(circle at 80% 90%, rgba(255, 107, 0, 0.05) 0%, transparent 50%);
         }
 
-        /* Navegación */
+        /* BARRA SUPERIOR - REDES SOCIALES Y ESTADO RÁPIDO */
+        .top-bar {
+            background-color: var(--negro-solido);
+            padding: 8px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gris-borde);
+            font-size: 0.85rem;
+        }
+
+        .top-bar-left {
+            color: var(--gris-texto);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .social-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .social-tag {
+            font-weight: 800;
+            color: var(--blanco);
+            letter-spacing: 0.5px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--gris-borde);
+            user-select: all; /* Facilita la selección/copia manual */
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--gris-claro);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border: 1px solid var(--gris-borde);
+            font-size: 0.95rem;
+        }
+
+        /* Hover dinámico con los colores de cada red social */
+        .social-btn.youtube:hover {
+            background: #ff0000;
+            color: #fff;
+            border-color: #ff0000;
+            box-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .social-btn.tiktok:hover {
+            background: #000;
+            color: #00f2fe;
+            border-color: #fe2c55;
+            box-shadow: 0 0 12px rgba(254, 44, 85, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .social-btn.instagram:hover {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: #fff;
+            border-color: #dc2743;
+            box-shadow: 0 0 12px rgba(220, 39, 67, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .social-btn.discord:hover {
+            background: #5865f2;
+            color: #fff;
+            border-color: #5865f2;
+            box-shadow: 0 0 12px rgba(88, 101, 242, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* NAVEGACIÓN PRINCIPAL */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 8%;
-            background-color: rgba(3, 4, 5, 0.85);
+            background-color: rgba(20, 22, 29, 0.85);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--gris-borde);
             position: sticky;
@@ -93,10 +183,10 @@
 
         .nav-links a:hover { color: var(--naranja); }
 
-        /* Cabecera Principal */
+        /* CABECERA Y SECCIÓN PRINCIPAL */
         header {
             text-align: center;
-            padding: 50px 20px 30px;
+            padding: 40px 20px 30px;
         }
 
         .logo-container {
@@ -161,7 +251,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
 
-        /* Box de Estado */
+        /* CAJA DE ESTADO Y CONEXIÓN */
         .status-box {
             background-color: var(--gris-tarjeta);
             border: 1px solid var(--gris-borde);
@@ -259,7 +349,7 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
         }
 
-        /* Secciones Principales */
+        /* TIENDA DE RANGOS */
         .container {
             max-width: 1100px;
             margin: 40px auto;
@@ -276,7 +366,6 @@
 
         .section-title span { color: var(--naranja); }
 
-        /* Tienda de Rangos con Flexbox para salto de línea */
         .ranks-container {
             display: flex;
             flex-wrap: wrap;
@@ -374,18 +463,44 @@
         }
 
         @media (max-width: 600px) {
+            .top-bar { flex-direction: column; gap: 8px; text-align: center; }
+            .top-bar-right { flex-direction: column; gap: 8px; }
             .connection-grid { grid-template-columns: 1fr; }
             .titulo-principal { font-size: 2.6rem; }
             .platform-badges { flex-direction: column; align-items: center; }
-            .rank-card {
-                max-width: 100%;
-                flex: 1 1 100%;
-            }
+            .rank-card { max-width: 100%; flex: 1 1 100%; }
         }
     </style>
 </head>
 <body>
 
+    <!-- BARRA SUPERIOR REDES SOCIALES -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <i class="fa-solid fa-fire" style="color: var(--naranja);"></i>
+            <span>¡Únete a la comunidad de SolarisGG!</span>
+        </div>
+
+        <div class="top-bar-right">
+            <div class="social-links">
+                <a href="https://www.youtube.com/@SolarisGGOficial" target="_blank" class="social-btn youtube" title="YouTube">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+                <a href="https://www.tiktok.com/@solarisggoficial" target="_blank" class="social-btn tiktok" title="TikTok">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+                <a href="https://www.instagram.com/solarisggoficial" target="_blank" class="social-btn instagram" title="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://discord.gg/rSMRKgnccq" target="_blank" class="social-btn discord" title="Discord">
+                    <i class="fa-brands fa-discord"></i>
+                </a>
+            </div>
+            <span class="social-tag">@solarisggoficial</span>
+        </div>
+    </div>
+
+    <!-- NAVEGACIÓN -->
     <nav>
         <a href="#" class="nav-brand">
             <img src="SolarisGG Logo.png" alt="SolarisGG Logo" class="nav-logo-img">
@@ -397,6 +512,7 @@
         </ul>
     </nav>
 
+    <!-- CABECERA PRINCIPAL -->
     <header id="inicio">
         <div class="logo-container">
             <img src="SolarisGG Logo.png" alt="SolarisGG Network Logo" class="server-logo">
@@ -413,7 +529,7 @@
         </div>
 
         <div class="status-box">
-            <!-- Botones de IP (Ahora arriba) -->
+            <!-- Botones de IP (ARRIBA) -->
             <div class="connection-grid">
                 <button class="btn-ip" id="btnJava" onclick="copiarIP('mc.solarisgg.opik.net', 'btnJava')">
                     <span class="ip-type"><i class="fa-solid fa-desktop"></i> JAVA IP</span>
@@ -426,9 +542,8 @@
                 </button>
             </div>
 
-            <!-- Grilla de Información (Ahora abajo) -->
+            <!-- Grilla de Estado (ABAJO) -->
             <div class="status-grid">
-                <!-- Fila Superior -->
                 <div class="stat-item">
                     <div class="stat-label">Versión</div>
                     <div class="stat-val" id="versionText">1.7.2-26.2</div>
@@ -438,7 +553,6 @@
                     <div class="stat-val" id="playerCount">- / -</div>
                 </div>
 
-                <!-- Fila Inferior -->
                 <div class="stat-item">
                     <div class="stat-label">Estado</div>
                     <div class="stat-val" id="statusText">Cargando...</div>
@@ -456,6 +570,7 @@
         </div>
     </header>
 
+    <!-- TIENDA -->
     <main class="container" id="tienda">
         <h2 class="section-title">Tienda de <span>Rangos</span></h2>
 
@@ -560,7 +675,6 @@
             const motdEl = document.getElementById("motdText");
             const pingEl = document.getElementById("pingText");
 
-            // Versión fija
             versionEl.innerText = "1.7.2-26.2";
 
             try {
@@ -577,15 +691,12 @@
                         motdEl.innerText = "¡Bienvenido al servidor oficial de SolarisGG Network!";
                     }
 
-                    // Solo calcula el ping si está encendido
                     mediping();
 
                 } else {
                     statusEl.innerHTML = '<span style="color: #ef4444;">Apagado 🔴</span>';
                     countEl.innerText = "0 / 1500";
                     motdEl.innerText = "El servidor se encuentra actualmente en mantenimiento o apagado.";
-                    
-                    // Si está apagado, restablece el texto de ping sin llamar a mediping()
                     pingEl.innerText = "-- ms";
                     pingEl.style.color = "var(--blanco)";
                 }
